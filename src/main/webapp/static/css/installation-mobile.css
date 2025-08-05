@@ -1,0 +1,219 @@
+/* installation-mobile.css */
+
+/* 공통 폰트 & 배경 */
+body {
+    font-family: "Noto Sans KR", sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* 헤더 */
+.header {
+    background-color: #0b9dfd;
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 14px;
+}
+.header .logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.header .logo img {
+    height: 24px;
+}
+.header .subtitle {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-left: 2px;
+}
+.header .role-badge {
+    background: #7f4fff;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 11px;
+    margin-left: 6px;
+}
+.header .icons {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* 페이지 헤더 */
+.page-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+.back-btn {
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 12px;
+    color: #222;
+}
+.page-title {
+    font-weight: 600;
+    font-size: 17px;
+    flex-grow: 1;
+    text-align: center;
+    margin-right: 30px;
+}
+
+/* 탭 메뉴 */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-top: 8px;
+}
+.tab-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-weight: 600;
+    cursor: pointer;
+    color: #777;
+    border-bottom: 3px solid transparent;
+    font-size: 14px;
+}
+.tab-item.active {
+    color: #0b9dfd;
+    border-bottom-color: #0b9dfd;
+}
+
+/* 필터 박스 */
+.filter-box {
+    background: white;
+    margin: 12px 15px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
+    font-size: 14px;
+}
+.filter-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.filter-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+.filter-controls select,
+.filter-controls input[type="text"] {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+}
+.refresh-btn {
+    cursor: pointer;
+    color: #0b9dfd;
+    font-weight: 600;
+    font-size: 18px;
+    align-self: center;
+}
+
+/* 검색 결과 카운트 */
+.search-result-count {
+    margin: 8px 15px 8px 15px;
+    color: #555;
+    font-size: 13px;
+}
+
+/* 카드 리스트 */
+.card-list {
+    margin: 0 15px 50px 15px;
+}
+.card-item {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.card-item .top-row {
+    display: flex;
+    justify-content: space-between;
+    color: #555;
+    font-size: 12px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+.card-item .main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+.card-item .main-row .name {
+    color: #222;
+}
+.card-item .main-row .serial {
+    color: #0b9dfd;
+    font-weight: 700;
+}
+.card-item .bottom-row {
+    color: #666;
+    font-size: 12px;
+    line-height: 1.3;
+}
+.badge-meter {
+    background-color: #0b9dfd;
+    color: white;
+    font-size: 11px;
+    padding: 3px 7px;
+    border-radius: 15px;
+    margin-left: 6px;
+}
+.badge-dcu {
+    background-color: #7f4fff;
+    color: white;
+    font-size: 11px;
+    padding: 3px 7px;
+    border-radius: 15px;
+    margin-left: 6px;
+}
+
+/* 반응형 간단 처리 */
+@media (max-width: 400px) {
+    .header {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+    .header .logo img {
+        height: 22px;
+    }
+    .page-title {
+        font-size: 15px;
+        margin-right: 10px;
+    }
+    .tab-item {
+        font-size: 12px;
+        padding: 8px 0;
+    }
+    .filter-controls select,
+    .filter-controls input[type="text"] {
+        font-size: 12px;
+    }
+    .card-item {
+        font-size: 13px;
+        padding: 12px 14px;
+    }
+}
