@@ -1,0 +1,74 @@
+.header {
+    background-color: #0b9dfd;
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.header .logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.header .logo img {
+    height: 28px;
+}
+.header .subtitle {
+    font-size: 12px;
+    opacity: 0.7;
+}
+.role-badge {
+    background: #7f4fff;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+    margin-left: 6px;
+}
+.icons {
+    display: flex;
+    gap: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* 헤더 바로 아래 메뉴바 */
+.top-nav {
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.top-nav ul {
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    padding: 10px 0;
+    list-style: none;
+}
+
+.top-nav .nav-item {
+    font-size: 22px;
+}
+
+.top-nav .nav-item a {
+    color: rgb(222, 222, 222);  /* 기본 컬러 */
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+}
+
+.top-nav .nav-item.active a {
+    color: #007bff; /* 액티브 블루 */
+}
+
+.top-nav .nav-item.active a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: #007bff;
+    border-radius: 2px;
+}

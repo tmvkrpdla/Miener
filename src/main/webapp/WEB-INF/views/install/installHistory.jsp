@@ -9,25 +9,13 @@
     <title>설치이력</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-
-    <link href="${pageContext.request.contextPath}/static/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/static/css/installation-mobile.css" rel="stylesheet" />
 
 </head>
 <body>
+<%@ include file="/WEB-INF/views/common/header.jsp" %>
 
-<header class="header">
-    <div class="logo">
-        <img src="${pageContext.request.contextPath}/static/img/logo-white.png" alt="지구방 로고" />
-        <span>지구방</span>
-        <span class="subtitle">지구를 구하는 방법</span>
-        <span class="role-badge">관리자</span>
-    </div>
-    <div class="icons">
-        <span title="로그아웃" onclick="location.href='${pageContext.request.contextPath}/logout'">&#x1F511;</span>
-        <span title="알림">&#128276;</span>
-    </div>
-</header>
 
 <div class="page-header">
     <span class="back-btn" onclick="history.back()">←</span>
@@ -49,11 +37,36 @@
             <option value="thisWeek">이번주</option>
             <option value="thisMonth">이번달</option>
         </select>
-        <select id="workerFilter" name="workerFilter">
+        <%--        <select id="workerFilter" name="workerFilter">--%>
+        <%--            <option value="all" selected>전체</option>--%>
+        <%--            <option value="kim">김화경</option>--%>
+        <%--            <option value="lee">이호성</option>--%>
+        <%--        </select>--%>
+
+        <div class="custom-select" onclick="openBottomSheet('worker')">
+            <span id="workerSelectedText">전체</span>
+        </div>
+
+
+        <!-- 숨겨진 실제 select -->
+
+
+        <select id="workerFilter" name="workerFilter" style="display: none;">
             <option value="all" selected>전체</option>
             <option value="kim">김화경</option>
             <option value="lee">이호성</option>
         </select>
+
+        <!-- 바텀 시트 -->
+        <div id="bottomSheet" class="bottom-sheet">
+            <div class="sheet-content">
+                <div class="sheet-option" data-value="all">전체</div>
+                <div class="sheet-option" data-value="kim">김화경</div>
+                <div class="sheet-option" data-value="lee">이호성</div>
+                <div class="sheet-close" onclick="closeBottomSheet()">취소</div>
+            </div>
+        </div>
+
         <select id="regionFilter" name="regionFilter">
             <option value="all" selected>전체</option>
             <option value="seoul">서울</option>

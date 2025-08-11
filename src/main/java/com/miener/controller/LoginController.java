@@ -33,7 +33,7 @@ public class LoginController {
         boolean isValid = true;
 
         if (isValid) {
-            return "redirect:/main"; // 로그인 성공 시 메인 페이지로 이동
+            return "redirect:/profile/settings"; // 로그인 성공 시 메인 페이지로 이동
         } else {
             return "redirect:/login?error"; // 실패 시 다시 로그인 페이지로
         }
@@ -46,10 +46,6 @@ public class LoginController {
     }
 
 
-    @GetMapping("/main")
-    public String mainPage() {
-        return "main"; // src/main/resources/templates/main.html 또는 WEB-INF/views/main.jsp 등 뷰 이름
-    }
 
 
 }
