@@ -38,11 +38,13 @@ public class MainController {
         return "statistics"; // => /WEB-INF/views/statistics.jsp
     }
 
+
     @GetMapping("/profile/settings")
     public String profileSettings(Model model) {
         model.addAttribute("menu", "profile");
         return "profile/settings"; // => /WEB-INF/views/profile/settings.jsp
     }
+
 
     @GetMapping("/install/history")
     public String installHistory(Model model) {
