@@ -5,20 +5,25 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>설치이력</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/static/css/installation-mobile.css" rel="stylesheet" />
+    <jsp:include page="../common/common.jsp"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <link href="${pageContext.request.contextPath}/static/css/installation-mobile.css?${resourceVersion}" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
+<%--<%@ include file="/WEB-INF/views/common/navigation.jsp" %>--%>
 
 
 <div class="page-header">
-    <span class="back-btn" onclick="history.back()">←</span>
+    <span class="back-btn" id="historyBack">←</span>
     <div class="page-title">설치이력</div>
 </div>
 
@@ -43,29 +48,34 @@
         <%--            <option value="lee">이호성</option>--%>
         <%--        </select>--%>
 
-        <div class="custom-select" onclick="openBottomSheet('worker')">
-            <span id="workerSelectedText">전체</span>
-        </div>
+        <%--   <div class="custom-select" onclick="openBottomSheet('worker')">
+               <span id="workerSelectedText">전체</span>
+           </div>--%>
 
-
-        <!-- 숨겨진 실제 select -->
-
-
-        <select id="workerFilter" name="workerFilter" style="display: none;">
+        <select id="workerFilter">
             <option value="all" selected>전체</option>
             <option value="kim">김화경</option>
             <option value="lee">이호성</option>
         </select>
 
-        <!-- 바텀 시트 -->
-        <div id="bottomSheet" class="bottom-sheet">
-            <div class="sheet-content">
-                <div class="sheet-option" data-value="all">전체</div>
-                <div class="sheet-option" data-value="kim">김화경</div>
-                <div class="sheet-option" data-value="lee">이호성</div>
-                <div class="sheet-close" onclick="closeBottomSheet()">취소</div>
-            </div>
-        </div>
+
+        <!-- 숨겨진 실제 select -->
+
+        <%-- <select id="workerFilter" name="workerFilter" style="display: none;">
+             <option value="all" selected>전체</option>
+             <option value="kim">김화경</option>
+             <option value="lee">이호성</option>
+         </select>
+
+         <!-- 바텀 시트 -->
+         <div id="bottomSheet" class="bottom-sheet">
+             <div class="sheet-content">
+                 <div class="sheet-option" data-value="all">전체</div>
+                 <div class="sheet-option" data-value="kim">김화경</div>
+                 <div class="sheet-option" data-value="lee">이호성</div>
+                 <div class="sheet-close" onclick="closeBottomSheet()">취소</div>
+             </div>
+         </div>--%>
 
         <select id="regionFilter" name="regionFilter">
             <option value="all" selected>전체</option>
@@ -74,42 +84,18 @@
         </select>
         <span class="refresh-btn" title="초기화" onclick="resetFilters()">⟳</span>
     </div>
-    <input type="text" id="searchKeyword" name="searchKeyword" placeholder="단지 전체" />
+    <input type="text" id="searchKeyword" name="searchKeyword" placeholder="단지 전체"/>
 </div>
 
 <div class="search-result-count">
-    검색 결과 : <c:out value="${fn:length(installationList)}" />
+    검색 결과 : <span id="resultCount">0</span>
 </div>
 
-<div class="card-list">
-    <c:forEach var="item" items="${installationList}">
-        <div class="card-item" onclick="location.href='${pageContext.request.contextPath}/installation/detail/${item.id}'">
-            <div class="top-row">
-                <span>${item.installDate} · ${item.worker} · ${item.region}</span>
-                <c:choose>
-                    <c:when test="${item.type == '계량기'}">
-                        <span class="badge-meter">계량기</span>
-                    </c:when>
-                    <c:when test="${item.type == 'DCU'}">
-                        <span class="badge-dcu">DCU</span>
-                    </c:when>
-                </c:choose>
-            </div>
-            <div class="main-row">
-                <span class="name">${item.complexName}</span>
-                <span class="serial">
-                    <c:out value="${item.serial}" />
-                </span>
-            </div>
-            <div class="bottom-row">
-                <div>${item.detailAddress}</div>
-                <div><small>${item.serialFull}</small></div>
-            </div>
-        </div>
-    </c:forEach>
+<div class="card-list" id="installationList">
+    <!-- AJAX로 동적으로 데이터가 채워짐 -->
 </div>
 
-<script src="${pageContext.request.contextPath}/static/js/installation-mobile.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/installation-mobile.js?${resourceVersion}"></script>
 
 </body>
 </html>

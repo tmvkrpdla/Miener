@@ -2,52 +2,6 @@
    🌍 설치이력 모바일 스타일
 -------------------------- */
 
-body {
-    font-family: "Noto Sans KR", sans-serif;
-    margin: 0;
-    background-color: #f2f4f7;
-}
-
-/* ✅ 상단 헤더 */
-.header {
-    background-color: #0b9dfd;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-weight: 500;
-    position: sticky;
-    top: 0;
-    z-index: 999;
-}
-
-.header .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.header .logo-area img {
-    height: 22px;
-}
-
-.header .role-badge {
-    background-color: #7f4fff;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 11px;
-    margin-left: 5px;
-}
-
-.header .icons {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-size: 18px;
-    cursor: pointer;
-}
 
 /* ✅ 페이지 헤더 */
 .page-header {
@@ -235,21 +189,26 @@ input#searchKeyword {
     transition: bottom 0.3s ease;
     z-index: 1000;
 }
+
 .bottom-sheet.show {
     bottom: 0;
 }
+
 .sheet-content {
     padding: 20px;
 }
+
 .sheet-option {
     padding: 12px;
     border-bottom: 1px solid #eee;
     font-size: 15px;
     cursor: pointer;
 }
+
 .sheet-option:hover {
     background-color: #f8f8f8;
 }
+
 .sheet-close {
     text-align: center;
     padding: 14px;
@@ -257,6 +216,113 @@ input#searchKeyword {
     cursor: pointer;
     font-size: 13px;
 }
+
+
+.hardware-box {
+    background-color: white;
+    margin: 12px 15px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    font-size: 13px;
+}
+
+.hardware-list {
+    background-color: white;
+    margin: 12px 15px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    font-size: 13px;
+}
+
+
+.filter-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.hardware-meter {
+    width: 100%;
+    overflow: hidden;
+}
+
+.hardware-card {
+    min-width: 200px;
+    max-width: 250px;
+    height: 140px;
+    background: linear-gradient(180deg, #0d6efd 0%, #007bff 100%);
+    color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hardware-card .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.hardware-card .card-main {
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.hardware-card .card-main span {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.hardware-card .card-sub {
+    font-size: 13px;
+    margin-top: 4px;
+    opacity: 0.9;
+}
+
+
+/* 개별 설치 정보 */
+#installationList {
+    margin-top: 20px;
+}
+
+#installationList select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.search-result-count {
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.installation-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.installation-table th, .installation-table td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.installation-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.installation-table td {
+    font-size: 13px;
+}
+
 
 /* ✅ 반응형 */
 @media (max-width: 480px) {
@@ -274,6 +340,27 @@ input#searchKeyword {
         margin: 10px;
         padding: 12px;
     }
+
+    .hardware-box {
+        margin: 10px;
+        padding: 12px;
+    }
+
+    .hardware-list {
+        margin: 10px;
+        padding: 12px;
+    }
+
+    .hardware-card {
+        min-width: 180px;
+        height: 120px;
+    }
+
+    .hardware-card .card-main {
+        font-size: 28px;
+    }
+
+
 }
 
 @media (min-width: 768px) {
@@ -290,5 +377,4 @@ input#searchKeyword {
         max-width: 900px;
     }
 }
-
 

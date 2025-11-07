@@ -46,14 +46,14 @@ public class MainController {
     }
 
 
-    @GetMapping("/install/history")
+/*    @GetMapping("/install/history")
     public String installHistory(Model model) {
         return "install/installHistory";
     }
 
     @GetMapping("/install/regImage")
     public String regInstallImage(Model model) {
-        return "install/regInstallImage";
-    }
+        return "install/regImage";
+    }*/
 
 }
