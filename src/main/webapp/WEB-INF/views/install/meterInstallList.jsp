@@ -46,8 +46,17 @@
         </li>
 
         <li class="detail-item editable" data-editable="true">
+            <span class="label">MAC Adress</span>
+            <input type="text" class="value-input" value="123456789">
+            <span class="arrow">&gt;</span>
+        </li>
+
+        <li class="detail-item editable" data-editable="true">
             <span class="label">모뎀 여부</span>
-            <input type="text" class="value-input" value="모뎀">
+            <select class="value-input">
+                <option value="모뎀">모뎀</option>
+                <option value="모뎀아님">모뎀 아님</option>
+            </select>
             <span class="arrow">&gt;</span>
         </li>
 

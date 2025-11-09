@@ -12,6 +12,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
     <link href="${pageContext.request.contextPath}/static/css/dcuInstallList.css?${resourceVersion}" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/static/css/modal.css?${resourceVersion}" rel="stylesheet"/>
 
 
 </head>
@@ -43,41 +44,42 @@
 
         <li class="detail-item editable" data-editable="true">
             <span class="label">DCU ID</span>
-            <input type="text" class="value-input" value="A0007F0001">
+            <input type="text" class="value-input" id="dcuId" value="">
             <span class="arrow">&gt;</span>
+            <input type="hidden" id="ajaxSeqDcu" style="display: none;">
         </li>
 
         <li class="detail-item">
             <span class="label">연결된 LTE</span>
-            <span class="value static">0081706</span>
+            <span id="lteSn" class="value static"></span>
         </li>
 
         <li class="detail-item editable" data-editable="true">
             <span class="label">SSH2 Port</span>
-            <input type="text" class="value-input" value="22001">
+            <input type="text" id="sshPort" class="value-input" value="">
             <span class="arrow">&gt;</span>
         </li>
 
         <li class="detail-item editable" data-editable="true">
             <span class="label">FEP Port</span>
-            <input type="text" class="value-input" value="23001">
+            <input type="text" id="fepPort" class="value-input" value="">
             <span class="arrow">&gt;</span>
         </li>
 
         <li class="detail-item editable" data-editable="true">
             <span class="label">SNMP Port</span>
-            <input type="text" class="value-input" value="24001">
+            <input type="text" id="snmpPort" class="value-input" value="">
             <span class="arrow">&gt;</span>
         </li>
 
         <li class="detail-item">
             <span class="label">설치 작업자</span>
-            <span class="value static worker">김화경 (에너넷)</span>
+            <span id="workerName" class="value static worker"></span>
         </li>
 
         <li class="detail-item">
             <span class="label">설치 작업일시</span>
-            <span class="value static">2023-11-19 20:57</span>
+            <span id="firstLastInstalled" class="value static"></span>
         </li>
     </ul>
 
@@ -87,28 +89,46 @@
     <div class="reg-image-container">
         <h3>사진 등록</h3>
 
-        <div class="reg-grid">
 
-            <div class="reg-item" onclick="document.getElementById('fileInput1').click();">
-                <div class="camera-icon">
-                    <span class="icon">📸</span>
-                    <span class="plus">+</span>
+        <%--    <div class="reg-grid" id="previewContainer">
+                <div class="reg-item upload-trigger" onclick="document.getElementById('fileInput').click();">
+                    <div class="camera-icon">
+                        <span class="icon">📸</span>
+                        <span class="plus">+</span>
+                    </div>
                 </div>
-                <input type="file" id="fileInput1" style="display: none;" accept="image/*"
-                       onchange="previewImage(this, 'regItem1');">
+                <input type="file" id="fileInput" style="display:none;" accept="image/*" multiple>
             </div>
 
-            <div class="reg-item" onclick="document.getElementById('fileInput2').click();">
-                <div class="camera-icon">
-                    <span class="icon">📸</span>
-                    <span class="plus">+</span>
+            <button id="insertImageBtn" class="save-button image-save-button">저장하기</button>--%>
+
+        <div class="reg-grid-container">
+            <div id="previewContainer" class="photo-preview-list">
+
+                <div class="reg-item add-button" onclick="document.getElementById('fileInputMultiple').click();">
+                    <div class="camera-icon">
+                        <span class="icon">📸</span>
+                        <span class="plus">+</span>
+                    </div>
                 </div>
-                <input type="file" id="fileInput2" style="display: none;" accept="image/*"
-                       onchange="previewImage(this, 'regItem2');">
+
             </div>
+
+            <input type="file" id="fileInputMultiple" style="display: none;"
+                   accept="image/*" multiple
+                   onchange="handleMultipleFiles(this);">
         </div>
 
-        <button class="save-button image-save-button">저장하기</button>
+        <button id="uploadAllBtn" class="save-button image-save-button">저장하기</button>
+    </div>
+
+
+    <div id="loadingModal" class="loading-modal-overlay">
+        <div class="loading-modal-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">사진을 업로드 중입니다...</p>
+            <p class="loading-progress">0 / 0</p>
+        </div>
     </div>
 
 
@@ -116,34 +136,6 @@
         <h3>하드웨어 설치 사진</h3>
 
         <div class="photo-grid">
-            <div class="photo-item">
-                <img src="https://via.placeholder.com/180x180/007bff/ffffff?text=Image+1" alt="설치사진 1">
-                <div class="photo-overlay">
-                    <span class="date">2025-06-17 16:30</span>
-                    <span class="worker-name">김화경</span>
-                </div>
-            </div>
-            <div class="photo-item">
-                <img src="https://via.placeholder.com/180x180/28a745/ffffff?text=Image+2" alt="설치사진 2">
-                <div class="photo-overlay">
-                    <span class="date">2024-08-15 09:59</span>
-                    <span class="worker-name">고명우</span>
-                </div>
-            </div>
-            <div class="photo-item">
-                <img src="https://via.placeholder.com/180x180/ffc107/333333?text=Image+3" alt="설치사진 3">
-                <div class="photo-overlay">
-                    <span class="date">2023-02-09 15:22</span>
-                    <span class="worker-name">이호성</span>
-                </div>
-            </div>
-            <div class="photo-item">
-                <img src="https://via.placeholder.com/180x180/dc3545/ffffff?text=Image+4" alt="설치사진 4">
-                <div class="photo-overlay">
-                    <span class="date">2023-02-09 15:22</span>
-                    <span class="worker-name">이호성</span>
-                </div>
-            </div>
         </div>
     </div>
 

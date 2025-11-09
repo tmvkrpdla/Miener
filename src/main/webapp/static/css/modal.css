@@ -1,0 +1,57 @@
+/* --- 로딩 모달 CSS --- */
+
+/* 모달 오버레이 (전체 화면을 덮고 스크롤 방지) */
+.loading-modal-overlay {
+    display: none; /* 초기에는 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 어두운 반투명 배경 */
+    z-index: 10000; /* 최상위 */
+    justify-content: center;
+    align-items: center;
+    /* 모바일 환경에서 부드러운 전환을 위한 트랜지션 (선택 사항) */
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* 모달 내용 (가운데 흰색 박스) */
+.loading-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 200px; /* 모바일 환경에 적합한 크기 */
+}
+
+/* 로딩 스피너 애니메이션 */
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #007bff; /* 파란색 스피너 */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite; /* 1초마다 회전 */
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 텍스트 스타일 */
+.loading-text {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.loading-progress {
+    font-size: 16px;
+    color: #007bff;
+    font-weight: bold;
+}

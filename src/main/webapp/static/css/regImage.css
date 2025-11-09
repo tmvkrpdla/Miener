@@ -308,19 +308,22 @@ input#searchKeyword {
 }
 
 .installation-table th, .installation-table td {
-    padding: 8px;
+    padding: 5px;
     border-bottom: 1px solid #eee;
-    text-align: left;
+    text-align: center;
 }
 
 .installation-table th {
-    background: #f8f9fa;
+    background: #F0F0F0;
+    color: #474747;
+    font-size: 9.75pt;
     font-weight: 600;
-    font-size: 14px;
 }
 
 .installation-table td {
-    font-size: 13px;
+    color: #474747;
+    font-size: 9.75pt;
+    font-weight: 400;
 }
 
 

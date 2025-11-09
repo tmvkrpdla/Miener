@@ -16,6 +16,8 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/common/common.js?${resourceVersion}"></script>
+
 
 <link href="${pageContext.request.contextPath}/static/css/common.css?${resourceVersion}" rel="stylesheet"/>
 
