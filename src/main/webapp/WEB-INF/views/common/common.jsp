@@ -17,6 +17,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/common/common.js?${resourceVersion}"></script>
+<script src="${pageContext.request.contextPath}/static/js/common/enernet_api.js?${resourceVersion}"></script>
+
 
 
 <link href="${pageContext.request.contextPath}/static/css/common.css?${resourceVersion}" rel="stylesheet"/>

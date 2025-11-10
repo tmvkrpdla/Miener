@@ -28,7 +28,13 @@
 
 <div class="filter-box">
     <div class="filter-title">단지 검색</div>
-    <input type="text" id="searchKeyword" name="searchKeyword" placeholder="단지 전체"/>
+    <%-- <input type="text" id="searchKeyword" name="searchKeyword" placeholder="단지 전체"/>--%>
+
+    <div class="siteSelect-container" id="siteSelectContainer">
+
+        <select id="siteSelect" class="select2" name="siteSelect" data-live-search="true"></select>
+
+    </div>
 
 </div>
 
@@ -37,21 +43,19 @@
 
     <div class="hardware-meter swiper">
         <div class="swiper-wrapper">
-            <div class="swiper-slide hardware-card" data-type="DCU">
+            <div class="swiper-slide hardware-card" data-type="dcu">
                 <div class="card-title">DCU</div>
-                <div class="card-main">79 <span>개</span></div>
-                <div class="card-sub">TR 70 / Slave 9</div>
+                <div><span class="card-main" id="dcuCnt"></span> <span>개</span></div>
             </div>
 
-            <div class="swiper-slide hardware-card" data-type="Meter">
+            <div class="swiper-slide hardware-card" data-type="meter">
                 <div class="card-title">계량기 / 계측기</div>
-                <div class="card-main">999 <span>개 (모뎀 545)</span></div>
+                <div><span id="meterCnt" class="card-main"></span><span>개 (모뎀 545)</span></div>
                 <div class="card-sub">
                     세대부 908 (모뎀 454)<br>
                     공용부 91 (모뎀 91)
                 </div>
             </div>
-
 
         </div>
     </div>
@@ -60,26 +64,32 @@
 <!-- 하단 개별 설치 정보 -->
 <div class="hardware-list" id="installationList">
     <div class="filter-title">개별 설치 정보</div>
-    <div>
-        <select id="installFilter">
-            <option>설치위치 전체</option>
-            <option>101동</option>
-            <option>102동</option>
+    <div class="filter-container">
+        <select id="selectDongForMeter">
+            <option>전체</option>
+            <%--  <option>101동</option>
+              <option>102동</option>--%>
+        </select>
+
+        <select id="selectHoForMeter">
+            <%--  <option>101호</option>
+              <option>102호</option>--%>
         </select>
     </div>
     <div class="search-result-count">
         검색 결과 : <span id="resultCount">0</span>
     </div>
-
-    <table class="installation-table" id="installTable">
-        <thead>
-        <tr>
-            <th>설치 위치</th>
-            <th>DCU ID</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div id="installTable-container" style="max-height: 400px; overflow-y: auto;">
+        <table class="installation-table" id="installTable">
+            <thead>
+            <tr>
+                <th>설치 위치</th>
+                <th>DCU ID</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 </div>
 
 

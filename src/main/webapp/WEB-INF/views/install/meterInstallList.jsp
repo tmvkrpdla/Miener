@@ -38,43 +38,49 @@
 
         <li class="detail-item">
             <span class="label">설치 위치</span>
-            <span class="value static">101동 101호</span>
+            <span class="value static" id="targetName"></span>
         </li>
 
         <li class="detail-item editable" data-editable="true">
             <span class="label">계량기 ID</span>
-            <input type="text" class="value-input" value="90190000419">
+            <input type="text" class="value-input" id="mid" value="">
             <span class="arrow">&gt;</span>
         </li>
 
         <li class="detail-item editable" data-editable="true">
-            <span class="label">MAC Adress</span>
-            <input type="text" class="value-input" value="123456789">
+            <span class="label">MAC Address</span>
+            <input type="text" class="value-input" id="macAddress" value="">
             <span class="arrow">&gt;</span>
         </li>
 
         <li class="detail-item editable" data-editable="true">
             <span class="label">모뎀 여부</span>
-            <select class="value-input">
+            <select id="bModem" class="value-input">
                 <option value="모뎀">모뎀</option>
                 <option value="모뎀아님">모뎀 아님</option>
             </select>
             <span class="arrow">&gt;</span>
         </li>
 
+        <li class="detail-item editable" data-editable="true">
+            <span class="label">시작 지침</span>
+            <input type="text" class="value-input" id="startValue" value="">
+            <span class="arrow">&gt;</span>
+        </li>
+
         <li class="detail-item">
             <span class="label">연결된 DCU</span>
-            <span class="value static">A0007AF0001</span>
+            <span id="linkedDcuId" class="value static"></span>
         </li>
 
         <li class="detail-item">
             <span class="label">설치 작업자</span>
-            <span class="value static">김화경 (에너넷)</span>
+            <span id="workerName" class="value static"></span>
         </li>
 
         <li class="detail-item">
             <span class="label">설치 작업일시</span>
-            <span class="value static">2025-11-07 14:00</span>
+            <span id="firstLastInstalled" class="value static"></span>
         </li>
     </ul>
 
@@ -120,40 +126,6 @@
         </div>
     </div>
 
-    <%-- <div class="image-list-container">
-         <h3>하드웨어 설치 사진</h3>
-
-         <div class="photo-grid">
-             <div class="photo-item">
-                 <img src="https://via.placeholder.com/180x180/007bff/ffffff?text=Image+1" alt="설치사진 1">
-                 <div class="photo-overlay">
-                     <span class="date">2025-06-17 16:30</span>
-                     <span class="worker-name">김화경</span>
-                 </div>
-             </div>
-             <div class="photo-item">
-                 <img src="https://via.placeholder.com/180x180/28a745/ffffff?text=Image+2" alt="설치사진 2">
-                 <div class="photo-overlay">
-                     <span class="date">2024-08-15 09:59</span>
-                     <span class="worker-name">고명우</span>
-                 </div>
-             </div>
-             <div class="photo-item">
-                 <img src="https://via.placeholder.com/180x180/ffc107/333333?text=Image+3" alt="설치사진 3">
-                 <div class="photo-overlay">
-                     <span class="date">2023-02-09 15:22</span>
-                     <span class="worker-name">이호성</span>
-                 </div>
-             </div>
-             <div class="photo-item">
-                 <img src="https://via.placeholder.com/180x180/dc3545/ffffff?text=Image+4" alt="설치사진 4">
-                 <div class="photo-overlay">
-                     <span class="date">2023-02-09 15:22</span>
-                     <span class="worker-name">이호성</span>
-                 </div>
-             </div>
-         </div>
-     </div>--%>
 
 </div>
 

@@ -327,6 +327,13 @@ input#searchKeyword {
 }
 
 
+.filter-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
 /* ✅ 반응형 */
 @media (max-width: 480px) {
     .filter-box {
