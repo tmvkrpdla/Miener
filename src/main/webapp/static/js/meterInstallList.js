@@ -1,28 +1,36 @@
-function previewImage(input, regItemId) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        const regItem = input.closest('.reg-item'); // 가장 가까운 .reg-item 부모 찾기
 
-        reader.onload = function (e) {
-            // 1. 기존 카메라 아이콘 제거
-            const cameraIcon = regItem.querySelector('.camera-icon');
-            if (cameraIcon) {
-                cameraIcon.style.display = 'none';
-            }
+// === 설치 사진 렌더링 함수 ===
+// === 설치 사진 렌더링 함수 (JQuery 통일) ===
+function drawImg(list_image) {
+    const photoGrid = $('.photo-grid'); // JQuery 셀렉터 사용
+    photoGrid.empty(); // JQuery empty() 사용
 
-            // 2. 새로운 이미지 요소 생성 또는 업데이트
-            let imgPreview = regItem.querySelector('.image-preview');
-            if (!imgPreview) {
-                imgPreview = document.createElement('img');
-                imgPreview.className = 'image-preview';
-                // 이미지 크기 조정을 위해 CSS 클래스 추가
-                regItem.appendChild(imgPreview);
-            }
-            imgPreview.src = e.target.result;
-        };
-
-        reader.readAsDataURL(input.files[0]);
+    if (!list_image || list_image.length === 0) {
+        ``
+        photoGrid.append('<p>등록된 설치 사진이 없습니다.</p>');
+        return;
     }
+
+    list_image.forEach((img) => {
+        const item = $('<div>').addClass('photo-item'); // JQuery로 요소 생성
+
+        const htmlContent = `
+            <img src="${img.url_thumbnail}" alt="설치사진">
+            <div class="photo-overlay">
+                <span class="date">${img.time_image_added.substring(0, 16)}</span>
+                <span class="worker-name">${img.worker_name}</span>
+            </div>
+        `;
+
+        item.html(htmlContent);
+
+        // 썸네일 클릭 시 원본 이미지 새 창 열기 (JQuery 이벤트 바인딩)
+        item.find('img').on('click', () => {
+            window.open(img.url_image, '_blank');
+        });
+
+        photoGrid.append(item);
+    });
 }
 
 
@@ -33,39 +41,27 @@ $(document).ready(function () {
 
     console.log(`[DEBUG] 현재 페이지 meterId: ${meterId}`);
 
-    // ⚡ 샘플 데이터 (나중에 실제 API로 대체)
-    const sampleDetailData = {
-        "901900011112": {name: "1동 주차장 DCU", status: "정상", lastCheck: "2025-11-06 10:00"},
-        "901900011113": {name: "2동 지하주차장 DCU", status: "통신 불량", lastCheck: "2025-11-06 09:50"},
-        "901900011114": {name: "3동 옥상 DCU", status: "정상", lastCheck: "2025-11-06 09:45"}
-    };
 
-    // AJAX 대신 샘플 데이터로 표시
-    const detail = sampleDetailData[meterId];
-    if (detail) {
-        $('#dcuName').text(detail.name);
-        $('#dcuStatus').text(detail.status);
-        $('#lastCheck').text(detail.lastCheck);
-    } else {
-        alert("해당 DCU 정보를 찾을 수 없습니다.");
-    }
-
-    // ✅ 실제 API 사용 시
-    /*
     $.ajax({
-        url: contextPath + '/install/api/getDcuDetail',
+        url: '../install/getMeterDetail',
         type: 'GET',
-        data: { dcuId },
-        success: function(data) {
-            $('#dcuName').text(data.name);
-            $('#dcuStatus').text(data.status);
-            $('#lastCheck').text(data.lastCheck);
+        data: {seqHo: "516782"},
+        success: function (response) {
+
+            console.log("response : ", response);
+
+             // updateDcuInfo(response);
+             // 설치 사진 그리기
+             drawImg(response.LIST_IMAGE);
+
+
         },
-        error: function() {
-            alert("DCU 정보를 불러오는 중 오류가 발생했습니다.");
+        error: function (xhr, status, error) {
+            console.error("Error:", error);
+            alert("DCU 정보를 불러오는데 실패했습니다.");
         }
+
     });
-    */
 
 
     $('#historyBack').on('click', function () {

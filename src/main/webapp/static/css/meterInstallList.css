@@ -297,6 +297,69 @@
 }
 
 
+/* --- CSS 추가 --- */
+
+.reg-grid-container {
+    padding: 10px 0;
+    border: 1px dashed #ccc; /* 등록 영역 시각적 구분 */
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.photo-preview-list {
+    display: flex;
+    flex-wrap: wrap; /* 공간이 부족하면 다음 줄로 넘어가도록 */
+    gap: 10px;
+    padding: 10px;
+    align-items: center; /* 수직 중앙 정렬 */
+}
+
+/* 📸 추가 버튼 스타일 */
+.reg-item.add-button {
+    flex-shrink: 0; /* 버튼 크기가 줄어들지 않도록 고정 */
+    width: 80px;
+    height: 80px;
+    padding: 0; /* 기존 padding 제거 */
+    border: 1px dashed #aaa;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    /* 카메라 아이콘 관련 스타일은 기존 CSS 유지 */
+}
+
+/* 동적으로 생성되는 미리보기 항목 */
+.photo-preview-item {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.photo-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-preview-item .delete-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #dc3545; /* 빨간색 배경 */
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 18px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 10;
+    font-weight: bold;
+}
+
+
 @media (max-width: 600px) {
     .info-header {
         padding: 8px 10px;
@@ -310,3 +373,4 @@
         font-size: 1rem;
     }
 }
+

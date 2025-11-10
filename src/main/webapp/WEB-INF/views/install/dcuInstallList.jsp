@@ -89,19 +89,6 @@
     <div class="reg-image-container">
         <h3>사진 등록</h3>
 
-
-        <%--    <div class="reg-grid" id="previewContainer">
-                <div class="reg-item upload-trigger" onclick="document.getElementById('fileInput').click();">
-                    <div class="camera-icon">
-                        <span class="icon">📸</span>
-                        <span class="plus">+</span>
-                    </div>
-                </div>
-                <input type="file" id="fileInput" style="display:none;" accept="image/*" multiple>
-            </div>
-
-            <button id="insertImageBtn" class="save-button image-save-button">저장하기</button>--%>
-
         <div class="reg-grid-container">
             <div id="previewContainer" class="photo-preview-list">
 

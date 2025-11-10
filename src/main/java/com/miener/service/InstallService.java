@@ -1,8 +1,10 @@
 package com.miener.service;
 
+import com.miener.dao.mariadb.InstallDAO;
 import com.miener.util.ManagerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,6 +17,9 @@ import java.util.Map;
 public class InstallService {
 
 
+    private final InstallDAO installDAO;
+
+
     public Map<String, Object> getDcuDetails(String seqDcu) {
         Map<String, Object> response = new HashMap<>();
 
@@ -23,13 +28,27 @@ public class InstallService {
         HashMap<String, Object> dcuInfo = (HashMap<String, Object>) detailInfoMap.get("dcu_info");
         List<Object> listImageDcu = (List<Object>) detailInfoMap.get("list_image_dcu");
 
-//        log.info("dcuInfo : {}", dcuInfo);
-//        log.info("listImageDcu : {}", listImageDcu);
-
         response.put("dcu_info", dcuInfo);
         response.put("list_image", listImageDcu);
 
         return response;
+    }
+
+
+    public JSONArray WkGetHoInfo(Map param) {
+        try{
+            return installDAO.WkGetHoInfo(param);
+        }catch (Exception e){
+            return new JSONArray();
+        }
+    }
+
+    public JSONArray WkGetImageMeterListByHo(Map param) {
+        try{
+            return installDAO.WkGetImageMeterListByHo(param);
+        }catch (Exception e){
+            return new JSONArray();
+        }
     }
 
 

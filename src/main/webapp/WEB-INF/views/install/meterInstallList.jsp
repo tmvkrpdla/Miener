@@ -13,6 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
     <link href="${pageContext.request.contextPath}/static/css/meterInstallList.css?${resourceVersion}"
           rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/static/css/modal.css?${resourceVersion}" rel="stylesheet"/>
+
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
@@ -81,28 +83,33 @@
     <div class="reg-image-container">
         <h3>사진 등록</h3>
 
-        <div class="reg-grid">
+        <div class="reg-grid-container">
+            <div id="previewContainer" class="photo-preview-list">
 
-            <div class="reg-item" onclick="document.getElementById('fileInput1').click();">
-                <div class="camera-icon">
-                    <span class="icon">📸</span>
-                    <span class="plus">+</span>
+                <div class="reg-item add-button" onclick="document.getElementById('fileInputMultiple').click();">
+                    <div class="camera-icon">
+                        <span class="icon">📸</span>
+                        <span class="plus">+</span>
+                    </div>
                 </div>
-                <input type="file" id="fileInput1" style="display: none;" accept="image/*"
-                       onchange="previewImage(this, 'regItem1');">
+
             </div>
 
-            <div class="reg-item" onclick="document.getElementById('fileInput2').click();">
-                <div class="camera-icon">
-                    <span class="icon">📸</span>
-                    <span class="plus">+</span>
-                </div>
-                <input type="file" id="fileInput2" style="display: none;" accept="image/*"
-                       onchange="previewImage(this, 'regItem2');">
-            </div>
+            <input type="file" id="fileInputMultiple" style="display: none;"
+                   accept="image/*" multiple
+                   onchange="handleMultipleFiles(this);">
         </div>
 
-        <button class="save-button image-save-button">저장하기</button>
+        <button id="uploadAllBtn" class="save-button image-save-button">저장하기</button>
+    </div>
+
+
+    <div id="loadingModal" class="loading-modal-overlay">
+        <div class="loading-modal-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">사진을 업로드 중입니다...</p>
+            <p class="loading-progress">0 / 0</p>
+        </div>
     </div>
 
 
@@ -110,36 +117,43 @@
         <h3>하드웨어 설치 사진</h3>
 
         <div class="photo-grid">
-            <div class="photo-item">
-                <img src="https://via.placeholder.com/180x180/007bff/ffffff?text=Image+1" alt="설치사진 1">
-                <div class="photo-overlay">
-                    <span class="date">2025-06-17 16:30</span>
-                    <span class="worker-name">김화경</span>
-                </div>
-            </div>
-            <div class="photo-item">
-                <img src="https://via.placeholder.com/180x180/28a745/ffffff?text=Image+2" alt="설치사진 2">
-                <div class="photo-overlay">
-                    <span class="date">2024-08-15 09:59</span>
-                    <span class="worker-name">고명우</span>
-                </div>
-            </div>
-            <div class="photo-item">
-                <img src="https://via.placeholder.com/180x180/ffc107/333333?text=Image+3" alt="설치사진 3">
-                <div class="photo-overlay">
-                    <span class="date">2023-02-09 15:22</span>
-                    <span class="worker-name">이호성</span>
-                </div>
-            </div>
-            <div class="photo-item">
-                <img src="https://via.placeholder.com/180x180/dc3545/ffffff?text=Image+4" alt="설치사진 4">
-                <div class="photo-overlay">
-                    <span class="date">2023-02-09 15:22</span>
-                    <span class="worker-name">이호성</span>
-                </div>
-            </div>
         </div>
     </div>
+
+    <%-- <div class="image-list-container">
+         <h3>하드웨어 설치 사진</h3>
+
+         <div class="photo-grid">
+             <div class="photo-item">
+                 <img src="https://via.placeholder.com/180x180/007bff/ffffff?text=Image+1" alt="설치사진 1">
+                 <div class="photo-overlay">
+                     <span class="date">2025-06-17 16:30</span>
+                     <span class="worker-name">김화경</span>
+                 </div>
+             </div>
+             <div class="photo-item">
+                 <img src="https://via.placeholder.com/180x180/28a745/ffffff?text=Image+2" alt="설치사진 2">
+                 <div class="photo-overlay">
+                     <span class="date">2024-08-15 09:59</span>
+                     <span class="worker-name">고명우</span>
+                 </div>
+             </div>
+             <div class="photo-item">
+                 <img src="https://via.placeholder.com/180x180/ffc107/333333?text=Image+3" alt="설치사진 3">
+                 <div class="photo-overlay">
+                     <span class="date">2023-02-09 15:22</span>
+                     <span class="worker-name">이호성</span>
+                 </div>
+             </div>
+             <div class="photo-item">
+                 <img src="https://via.placeholder.com/180x180/dc3545/ffffff?text=Image+4" alt="설치사진 4">
+                 <div class="photo-overlay">
+                     <span class="date">2023-02-09 15:22</span>
+                     <span class="worker-name">이호성</span>
+                 </div>
+             </div>
+         </div>
+     </div>--%>
 
 </div>
 

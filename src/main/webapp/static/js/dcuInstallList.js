@@ -65,6 +65,7 @@ function drawImg(list_image) {
     photoGrid.empty(); // JQuery empty() 사용
 
     if (!list_image || list_image.length === 0) {
+        ``
         photoGrid.append('<p>등록된 설치 사진이 없습니다.</p>');
         return;
     }
@@ -174,31 +175,6 @@ function uploadAllPhotos(fileList, seqWorker, seqDcu) {
         });
 }
 
-/* // 모든 파일에 대해 개별 AJAX 요청을 보냅니다.
- filesToUpload.forEach((item, index) => {
-
-     // 개별 업로드 함수 호출 (Promise 등을 사용하여 순차적으로 구현하는 것이 좋으나,
-     // 여기서는 간단히 병렬 호출로 구현합니다. 서버 부하를 고려하여 순차 호출을 권장)
-     uploadSinglePhoto(item.file, seqWorker)
-         .then(() => {
-             successfulUploads++;
-             // 성공 시 미리보기 제거 (선택 사항)
-             $(`#${item.id}`).remove();
-         })
-         .catch((error) => {
-             console.error(`❌ 파일 업로드 실패 (${item.file.name}):`, error);
-         })
-         .finally(() => {
-             // 모든 파일 처리 완료 시 최종 알림
-             if (index === totalFiles - 1) {
-                 alert(`📸 업로드 완료! (성공: ${successfulUploads}건 / 전체: ${totalFiles}건)`);
-
-                 // 성공적으로 업로드된 파일들은 전역 배열에서 제거 (여기서는 단순화를 위해 전체 배열을 클리어)
-                 uploadedFiles.splice(0, uploadedFiles.length);
-             }
-         });
- });
-}*/
 
 // === 설치 dcu 사진 등록 함수 (Promise 반환하도록 튜닝) ===
 function uploadSinglePhoto(file, seqWorker, seqDcu) {
@@ -279,7 +255,6 @@ $(document).ready(function () {
         alert("해당 DCU 정보를 찾을 수 없습니다.");
     }
 
-    // ✅ 실제 API 사용 시
     $.ajax({
         url: '../install/getDcuInfo',
         type: 'GET',
@@ -312,24 +287,6 @@ $(document).ready(function () {
     });
 
 
-    /*    // === 사진 저장 버튼 클릭 시 ===
-        $('#insertImageBtn').on('click', function () {
-            const selectedWorker = '29'; // 실제로는 드롭다운 등에서 선택 가능하도록 변경
-            const seqDcu = $("#ajaxSeqDcu").val();
-
-            if (!selectedWorker || !seqDcu) {
-                alert("작업자 또는 DCU 정보가 누락되었습니다.");
-                return;
-            }
-
-            if (selectedFiles.length === 0) {
-                alert("사진을 선택해주세요.");
-                return;
-            }
-
-            // 모든 사진 업로드
-            uploadMultiplePhotos(selectedFiles, selectedWorker, seqDcu);
-        });*/
 });
 
 // 동적으로 생성된 삭제 버튼 클릭 이벤트
