@@ -1,11 +1,13 @@
 package com.miener.service;
 
 import com.miener.dao.mariadb.InstallDAO;
+import com.miener.dto.DcuUpdDTO;
 import com.miener.util.ManagerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +57,12 @@ public class InstallService {
     // Method that calls ManagerApi to fetch DCU info
     private HashMap<String, Object> fetchDcuInfo(String seqDcu) {
         return ManagerApi.getDcuInfo(seqDcu);
+    }
+
+    @Transactional
+    public boolean updateDcuInfo(DcuUpdDTO dto) {
+        int updated = installDAO.updateDcuInfo(dto);
+        return updated > 0;
     }
 }
 

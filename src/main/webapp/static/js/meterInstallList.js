@@ -228,36 +228,36 @@ function drawImg(list_image) {
 
 
 $(document).ready(function () {
-    // URL 파라미터에서 meterId 가져오기
+    // URL 파라미터에서 가져오기
     const urlParams = new URLSearchParams(window.location.search);
-    const meterId = urlParams.get("meterId");
+    const mid = urlParams.get("mid");
+    const seqHo = urlParams.get("seqHo");
+    const siteName = urlParams.get("siteName");
 
-    console.log(`[DEBUG] 현재 페이지 meterId: ${meterId}`);
+    console.log(`[DEBUG] 현재 페이지 meterId: ${mid}`);
+    console.log(`[DEBUG] 현재 페이지 seqHo: ${seqHo}`);
+
+    $('#siteName').text(siteName)
 
 
     $.ajax({
         url: '../install/getMeterDetail',
         type: 'GET',
-        data: {seqHo: "516782"},
+        data: {seqHo},
         success: function (response) {
-
             console.log("response : ", response);
-
             updateHoInfo(response.HO_INFO);
-            // 설치 사진 그리기
             drawImg(response.LIST_IMAGE);
-
         },
         error: function (xhr, status, error) {
             console.error("Error:", error);
             alert("DCU 정보를 불러오는데 실패했습니다.");
         }
-
     });
-
 
     $('#historyBack').on('click', function () {
         history.back();
+        // window.location.href = '../install/regImage';
     })
 
     $('#refreshBtn').on('click', function () {

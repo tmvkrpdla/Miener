@@ -1,11 +1,10 @@
 package com.miener.controller.install;
 
+import com.miener.dto.DcuUpdDTO;
 import com.miener.service.InstallService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,5 +46,21 @@ public class InstallRestController {
         response.put("SEQ_HO", seqHo);
 
         return response;
+    }
+
+    @PutMapping("/api/dcu/update")
+    public Map<String, Object> updateDcuInfo(@RequestBody DcuUpdDTO dto) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            boolean success = installService.updateDcuInfo(dto);
+            result.put("success", success);
+            if(!success) {
+                result.put("message", "업데이트 대상이 없습니다.");
+            }
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", e.getMessage());
+        }
+        return result;
     }
 }

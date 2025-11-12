@@ -21,7 +21,7 @@
 
 <div class="page-header">
     <span class="back-btn" id="historyBack">←</span>
-    <div class="page-title" id="siteName">신길경남</div>
+    <div class="page-title" id="siteName"></div>
 </div>
 
 <div class="install-container">
@@ -126,11 +126,7 @@
         </div>
     </div>
 
-
 </div>
-
-
 <script src="${pageContext.request.contextPath}/static/js/meterInstallList.js?${resourceVersion}"></script>
-
 </body>
 </html>

@@ -13,8 +13,8 @@ function handleMultipleFiles(input) {
     }
 
     // 선택된 모든 파일을 순회하며 처리
-    for (let i = 0; i < input.files.length; i++) {
-        const file = input.files[i];
+    for (const element of input.files) {
+        const file = element;
         const fileId = 'file_' + fileCounter++; // 고유 ID 생성
 
         // 1. 전역 배열에 파일 저장
@@ -59,7 +59,6 @@ function createPreview(file, fileId) {
 
 
 // === 설치 사진 렌더링 함수 ===
-// === 설치 사진 렌더링 함수 (JQuery 통일) ===
 function drawImg(list_image) {
     const photoGrid = $('.photo-grid'); // JQuery 셀렉터 사용
     photoGrid.empty(); // JQuery empty() 사용
@@ -101,23 +100,13 @@ function drawImg(list_image) {
  */
 function uploadAllPhotos(fileList, seqWorker, seqDcu) {
 
-
-    // 이전에 정의된 전역 변수와 함수를 사용합니다:
-    // const uploadedFiles; // 전역 파일 배열
-    // function showLoadingModal(total) { ... }
-    // function hideLoadingModal() { ... }
-    // function updateProgress(current, total) { ... }
-    // function uploadSinglePhoto(file, seqWorker) { ... } // Promise 반환
-
-
-    // 💥 추가: DCU ID의 유효성을 함수 시작 단계에서 검증 (안정성 강화)
+    //  DCU ID의 유효성 검증
     if (!seqDcu) {
         alert("DCU ID가 유효하지 않아 업로드를 시작할 수 없습니다.");
         return;
     }
 
-
-    // 순차적 업로드를 위한 Promise 체인 또는 async/await 사용 (가독성을 위해 간단한 for문 사용)
+    // 순차적 업로드를 위한 Promise 체인 또는 async/await 사용
     let successfulUploads = 0;
     const totalFiles = fileList.length;
     let uploadedCount = 0; // 성공/실패와 관계없이 처리된 파일 수
@@ -126,7 +115,7 @@ function uploadAllPhotos(fileList, seqWorker, seqDcu) {
     // files 배열을 복사하여 사용 (업로드 중 배열이 변경되는 것을 방지)
     const filesToUpload = [...fileList];
 
-    // 1. 💥 업로드 시작 시 로딩 모달 표시
+    // 1. 업로드 시작 시 로딩 모달 표시
     showLoadingModal(totalFiles);
 
     // 모든 파일에 대한 Promise 배열 생성
@@ -147,13 +136,13 @@ function uploadAllPhotos(fileList, seqWorker, seqDcu) {
                 return 'fail';
             })
             .finally(() => {
-                // 2. 💥 성공/실패 여부와 관계없이 처리된 파일 수 증가 및 모달 업데이트
+                // 2. 성공/실패 여부와 관계없이 처리된 파일 수 증가 및 모달 업데이트
                 uploadedCount++;
                 updateProgress(uploadedCount, totalFiles);
             });
     });
 
-    // 3. 💥 Promise.allSettled를 사용하여 모든 요청이 완료될 때까지 기다림
+    // 3. Promise.allSettled를 사용하여 모든 요청이 완료될 때까지 기다림
     // Promise.allSettled는 요청 중 하나가 실패해도 나머지 결과를 기다립니다.
     Promise.allSettled(uploadPromises)
         .then(results => {
@@ -162,7 +151,7 @@ function uploadAllPhotos(fileList, seqWorker, seqDcu) {
             // 최종 알림
             // alert(`📸 업로드 완료! (성공: ${successfulUploads}건 / 전체: ${totalFiles}건)`);
 
-            // 4. 💥 로딩 모달 숨김
+            // 4. 로딩 모달 숨김
             hideLoadingModal();
 
             // 전역 파일 배열 초기화 및 화면 업데이트 (이전 단계에서 정의한 전역 배열)
@@ -209,7 +198,7 @@ function uploadSinglePhoto(file, seqWorker, seqDcu) {
 }
 
 // === 설치 dcu 정보 렌더링 함수 ===
-function updateDcuInfo(data) {
+function renderingDcuInfo(data) {
     console.log("data : ", data);
 
     let dcuId = data.dcu_info.dcu_id;
@@ -218,7 +207,7 @@ function updateDcuInfo(data) {
 
     $('#ajaxSeqDcu').val(seqDcu);
     $('#dcuId').val(dcuId);
-    $('#lteSn').text(data.dcu_info.LteSn);
+    $('#lteSn').val(data.dcu_info.LteSn);
     $('#sshPort').val(data.dcu_info.nPortSsh2);
 
     $('#ajaxMdmsId').text(mdmsId);
@@ -227,6 +216,37 @@ function updateDcuInfo(data) {
     $('#snmpPort').val(data.dcu_info.port_snmp);
     $('#workerName').text(`${data.dcu_info.worker_name} (${data.dcu_info.company_name})`);
     $('#firstLastInstalled').text(data.dcu_info.time_dcu_installed);
+
+}
+
+function updDcuInfo() {
+    const dcuData = {
+        seqDcu: $('#ajaxSeqDcu').val(),
+        dcuId: $('#dcuId').val(),
+        lteSn: $('#lteSn').val(),
+        sshPort: $('#sshPort').val(),
+        fepPort: $('#fepPort').val(),
+        snmpPort: $('#snmpPort').val()
+    };
+
+
+    $.ajax({
+        url: '../install/api/dcu/update',
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(dcuData),
+        success: function (res) {
+            if (res.success) {
+                alert('DCU 정보가 업데이트되었습니다.');
+            } else {
+                alert('업데이트 실패: ' + res.message);
+            }
+        },
+        error: function (err) {
+            console.error(err);
+            alert('서버 오류 발생');
+        }
+    });
 
 }
 
@@ -243,34 +263,29 @@ $(document).ready(function () {
         type: 'GET',
         data: {seqDcu: seqDcu},
         success: function (response) {
-
             console.log("response : ", response);
-
-            updateDcuInfo(response);
-            // 설치 사진 그리기
+            renderingDcuInfo(response);
             drawImg(response.list_image);
-
-
         },
         error: function (xhr, status, error) {
             console.error("Error:", error);
             alert("DCU 정보를 불러오는데 실패했습니다.");
         }
-
     });
-
 
     $('#historyBack').on('click', function () {
         history.back();
     })
 
     $('#refreshBtn').on('click', function () {
-        console.log('[DEBUG] 새로고침 버튼 클릭됨');
         location.reload(); // 페이지 새로고침
     });
 
-
+    $('#saveDcuInfoBtn').on('click', function () {
+        updDcuInfo();
+    })
 });
+
 
 // 동적으로 생성된 삭제 버튼 클릭 이벤트
 $(document).on('click', '.delete-btn', function () {

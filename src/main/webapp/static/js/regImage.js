@@ -100,7 +100,8 @@ function renderInstallationList(type, data) {
             siteName,
             dongName,
             hoName,
-            mid
+            mid,
+            seqHo
         } = item;
 
         if (isDcu) {
@@ -120,7 +121,11 @@ function renderInstallationList(type, data) {
             </td>
         `;
         } else {
-            const params = new URLSearchParams({meterId: mid}).toString();
+            const params = new URLSearchParams({
+                mid,
+                siteName,
+                seqHo
+            }).toString();
 
             tr.innerHTML = `
             <td>${dongName || '-'}</td>
@@ -269,6 +274,10 @@ $(document).ready(async function () {
 
         renderInstallationList(hwType, data);
     });
+
+    $('#historyBack').on('click', function () {
+        window.location.href = '../profile/settings';
+    })
 
     // 초기 단지 리스트
     getSiteList('apt');

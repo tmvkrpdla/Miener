@@ -54,9 +54,10 @@
             <input type="hidden" id="ajaxSeqDcu" style="display: none;">
         </li>
 
-        <li class="detail-item">
+        <li class="detail-item editable" data-editable="true">
             <span class="label">연결된 LTE</span>
-            <span id="lteSn" class="value static"></span>
+            <input type="text" class="value-input" id="lteSn" value="">
+            <span class="arrow">&gt;</span>
         </li>
 
         <li class="detail-item editable" data-editable="true">
@@ -88,7 +89,7 @@
         </li>
     </ul>
 
-    <button class="save-button">저장하기</button>
+    <button id="saveDcuInfoBtn" class="save-button">저장하기</button>
 
 
     <div class="reg-image-container">

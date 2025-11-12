@@ -41,7 +41,9 @@ public class InstallController {
     }
 
     @RequestMapping("/meterInstallList")
-    public ModelAndView meterInstallList(ModelAndView mav) {
+    public ModelAndView meterInstallList(@RequestParam(required = false) Map<String, String> params,
+                                         ModelAndView mav) {
+        params.forEach(mav::addObject);
         mav.setViewName("install/meterInstallList");
         return mav;
     }

@@ -11,4 +11,14 @@
         call WkGetImageMeterListByHo(${seqHo}, 'https://egservice.co.kr/sgp_work_media')
     </select>
 
+    <update id="updateDcuInfo" parameterType="com.miener.dto.DcuUpdDTO">
+        UPDATE dcu
+        SET DcuId        = #{dcuId},
+            LteSn        = #{lteSn},
+            nPortSsh2    = #{sshPort},
+            nFepTrapPort = #{fepPort},
+            nPortSnmp    = #{snmpPort}
+        WHERE nSeqDcu = #{seqDcu}
+    </update>
+
 </mapper>
