@@ -14,6 +14,11 @@
     <link href="${pageContext.request.contextPath}/static/css/dcuInstallList.css?${resourceVersion}" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/static/css/modal.css?${resourceVersion}" rel="stylesheet"/>
 
+    <script>
+        const dcuId = "${empty dcuId ? '' : dcuId}";
+        const seqDcu = "${empty seqDcu ? '' : seqDcu}";
+        const siteName = "${empty siteName ? '' : siteName}";
+    </script>
 
 </head>
 <body>
@@ -21,7 +26,7 @@
 
 <div class="page-header">
     <span class="back-btn" id="historyBack">←</span>
-    <div class="page-title" id="siteName">신길경남</div>
+    <div class="page-title" id="siteName">${siteName}</div>
 </div>
 
 <div class="install-container">
@@ -122,12 +127,10 @@
     <div class="image-list-container">
         <h3>하드웨어 설치 사진</h3>
 
-        <div class="photo-grid">
-        </div>
+        <div class="photo-grid"></div>
     </div>
 
 </div>
-
 
 <script src="${pageContext.request.contextPath}/static/js/dcuInstallList.js?${resourceVersion}"></script>
 

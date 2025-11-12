@@ -64,21 +64,16 @@
 <!-- 하단 개별 설치 정보 -->
 <div class="hardware-list" id="installationList">
     <div class="filter-title">개별 설치 정보</div>
-    <div class="filter-container">
-        <select id="selectDongForMeter">
-            <option>전체</option>
-            <%--  <option>101동</option>
-              <option>102동</option>--%>
-        </select>
 
-        <select id="selectHoForMeter">
-            <%--  <option>101호</option>
-              <option>102호</option>--%>
-        </select>
+    <div class="filter-container">
+        <select id="selectDongForMeter"></select>
+        <select id="selectHoForMeter"></select>
     </div>
+
     <div class="search-result-count">
         검색 결과 : <span id="resultCount">0</span>
     </div>
+
     <div id="installTable-container" style="max-height: 400px; overflow-y: auto;">
         <table class="installation-table" id="installTable">
             <thead>

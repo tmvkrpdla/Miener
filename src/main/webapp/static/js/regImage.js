@@ -84,19 +84,55 @@ function renderInstallationList(type, data) {
         thead.innerHTML = `<tr><th>동</th><th>호</th><th>계량기 ID</th></tr>`;
     }
 
-    // 데이터
+    // === 데이터 ===
     resultCount.textContent = data.length;
+
     data.forEach(item => {
-        const targetPage = type === "dcu" ? "../install/dcuInstallList" : "../install/meterInstallList";
         const tr = document.createElement('tr');
-        if (type === "dcu") {
-            tr.innerHTML = `<td>${item.location}</td>
-                            <td><a href="${targetPage}?dcuId=${item.id}" class="dcu-link" data-id="${item.id}">${item.dcuId}</a></td>`;
-        } else if (type === "meter") {
-            tr.innerHTML = `<td>${item.dongName}</td>
-                            <td>${item.hoName}</td>
-                            <td><a href="${targetPage}?meterId=${item.mid}" class="meter-link" data-id="${item.mid}">${item.mid}</a></td>`;
+        const isDcu = type === "dcu";
+        const targetPage = isDcu ? "../install/dcuInstallList" : "../install/meterInstallList";
+
+        // === 공통 변수 구조 분해 ===
+        const {
+            location,
+            dcuId,
+            seqDcu,
+            siteName,
+            dongName,
+            hoName,
+            mid
+        } = item;
+
+        if (isDcu) {
+            // ✅ URLSearchParams 사용으로 안전하게 파라미터 구성
+            const params = new URLSearchParams({
+                dcuId,
+                seqDcu,
+                siteName
+            }).toString();
+
+            tr.innerHTML = `
+            <td>${location || '-'}</td>
+            <td>
+                <a href="${targetPage}?${params}" class="dcu-link" data-id="${dcuId}">
+                    ${dcuId}
+                </a>
+            </td>
+        `;
+        } else {
+            const params = new URLSearchParams({meterId: mid}).toString();
+
+            tr.innerHTML = `
+            <td>${dongName || '-'}</td>
+            <td>${hoName || '-'}</td>
+            <td>
+                <a href="${targetPage}?${params}" class="meter-link" data-id="${mid}">
+                    ${mid}
+                </a>
+            </td>
+        `;
         }
+
         tbody.appendChild(tr);
     });
 }

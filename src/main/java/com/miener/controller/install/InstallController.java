@@ -6,7 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,7 +30,12 @@ public class InstallController {
 
 
     @RequestMapping("/dcuInstallList")
-    public ModelAndView dcuInstallList(ModelAndView mav) {
+    public ModelAndView dcuInstallList(
+            @RequestParam(required = false) Map<String, String> params,
+            ModelAndView mav) {
+
+        // siteName, dcuId, seqDcu 등 모든 파라미터를 한 번에 넣기
+        params.forEach(mav::addObject);
         mav.setViewName("install/dcuInstallList");
         return mav;
     }

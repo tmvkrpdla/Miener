@@ -238,27 +238,10 @@ $(document).ready(function () {
 
     console.log(`[DEBUG] 현재 페이지 dcuId: ${dcuId}`);
 
-    // ⚡ 샘플 데이터 (나중에 실제 API로 대체)
-    const sampleDetailData = {
-        "A0007F0001": {name: "1동 주차장 DCU", status: "정상", lastCheck: "2025-11-06 10:00"},
-        "A0007F0002": {name: "2동 지하주차장 DCU", status: "통신 불량", lastCheck: "2025-11-06 09:50"},
-        "A0007F0003": {name: "3동 옥상 DCU", status: "정상", lastCheck: "2025-11-06 09:45"}
-    };
-
-    // AJAX 대신 샘플 데이터로 표시
-    const detail = sampleDetailData[dcuId];
-    if (detail) {
-        $('#dcuName').text(detail.name);
-        $('#dcuStatus').text(detail.status);
-        $('#lastCheck').text(detail.lastCheck);
-    } else {
-        alert("해당 DCU 정보를 찾을 수 없습니다.");
-    }
-
     $.ajax({
         url: '../install/getDcuInfo',
         type: 'GET',
-        data: {seqDcu: "10264"},
+        data: {seqDcu: seqDcu},
         success: function (response) {
 
             console.log("response : ", response);
