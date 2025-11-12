@@ -21,11 +21,45 @@ function getSiteList(type) {
     });
 }
 
-function renderSiteList(siteList) {
+/*function renderSiteList(siteList) {
     const $siteSelect = $('#siteSelect').empty().append('<option value="" disabled selected>선택하세요</option>');
     siteList.forEach(site => {
         $siteSelect.append(`<option value="${site.seqSite}" data-siteCode="${site.siteCode}">${site.name} (${site.siteCode})</option>`);
     });
+}*/
+
+/**
+ * 단지 리스트를 렌더링하고 Select2를 초기화합니다.
+ * @param {Array<Object>} siteList - 단지 목록 데이터
+ */
+function renderSiteList(siteList) {
+    const $siteSelect = $('#siteSelect').empty().append('<option value="" disabled selected>선택하세요</option>');
+
+    // 1. 단지 옵션 렌더링
+    siteList.forEach(site => {
+        $siteSelect.append(`<option value="${site.seqSite}" data-siteCode="${site.siteCode}">${site.name} (${site.siteCode})</option>`);
+    });
+
+    // 2. Select2 초기화
+    // 모바일 환경을 고려하여 초기화합니다.
+    $siteSelect.select2({
+        // 한국어 설정 적용
+        language: "ko",
+        // 검색 결과를 드롭다운 안에 렌더링 (모바일 화면 전체를 덮지 않도록)
+        dropdownAutoWidth: true,
+        // 선택하지 않은 상태에서 보일 텍스트
+        placeholder: "단지 검색",
+        // 검색창에 커서 자동 포커스
+        minimumResultsForSearch: 1, // 항상 검색창 표시
+        width: '100%' // 부모 요소 너비에 맞춤
+    });
+
+    // **팁: Select2는 <select> 요소를 숨기고 새로운 UI를 만듭니다.**
+    // **따라서, 기존 select에 걸린 이벤트는 Select2 이벤트로 전환해야 합니다.**
+
+    // 만약 기존에 걸려있는 'change' 이벤트가 있다면:
+    // $("#siteSelect").on('change', function () { ... });
+    // 이는 Select2가 생성하는 별도의 이벤트로 자동으로 처리됩니다.
 }
 
 // === 장비 데이터 호출 ===

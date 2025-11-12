@@ -16,6 +16,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
+    <%--select2 라이브러리--%>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/i18n/ko.min.js"></script>
+    <%--select2 라이브러리--%>
+
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
@@ -28,12 +34,9 @@
 
 <div class="filter-box">
     <div class="filter-title">단지 검색</div>
-    <%-- <input type="text" id="searchKeyword" name="searchKeyword" placeholder="단지 전체"/>--%>
 
     <div class="siteSelect-container" id="siteSelectContainer">
-
         <select id="siteSelect" class="select2" name="siteSelect" data-live-search="true"></select>
-
     </div>
 
 </div>
