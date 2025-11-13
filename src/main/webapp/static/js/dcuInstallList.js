@@ -338,7 +338,7 @@ $(document).ready(function () {
 
         // `uploadedFiles`가 전역 변수라고 가정
         if (typeof uploadedFiles === 'undefined' || uploadedFiles.length === 0) {
-            alert("등록할 사진을 선택해주세요.");
+            console.log("등록할 사진 없음.");
             return;
         }
 
@@ -408,22 +408,3 @@ $(document).on('click', '.delete-btn', function () {
 });
 
 
-/*
-// 💥 튜닝된 저장 버튼 클릭 이벤트
-$('#uploadAllBtn').on('click', function () {
-    const selectedWorker = '29'; // 실제로는 DOM에서 선택된 작업자 ID를 가져와야 함
-    const seqDcu = $("#ajaxSeqDcu").val(); // DCU ID를 DOM에서 가져옴
-
-    if (!selectedWorker) {
-        alert("작업자를 선택해주세요.");
-        return;
-    }
-
-    if (uploadedFiles.length === 0) {
-        alert("등록할 사진을 선택해주세요.");
-        return;
-    }
-
-    // 모든 파일을 순차적으로 업로드하는 함수 호출
-    uploadAllPhotos(uploadedFiles, selectedWorker, seqDcu);
-});*/

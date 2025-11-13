@@ -2,6 +2,7 @@ package com.miener.service;
 
 import com.miener.dao.mariadb.InstallDAO;
 import com.miener.dto.DcuUpdDTO;
+import com.miener.dto.HoUpdateDto;
 import com.miener.util.ManagerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,23 @@ public class InstallService {
     public boolean updateDcuInfo(DcuUpdDTO dto) {
         int updated = installDAO.updateDcuInfo(dto);
         return updated > 0;
+    }
+
+
+    /**
+     * 하드웨어 설치 정보를 업데이트합니다. (Meter 및 AptHo 테이블)
+     * 트랜잭션을 사용하여 두 업데이트가 모두 성공하거나 모두 실패하도록 보장합니다.
+     */
+    @Transactional
+    public void updateHoHardware(HoUpdateDto dto) {
+        if (dto.getSeqMeter() != null) {
+            installDAO.updateMeterInfo(dto);
+        } else {
+            throw new IllegalArgumentException("계량기 ID가 필요합니다.");
+        }
+        // AptHo 정보는 seqHo를 통해 업데이트
+        installDAO.updateAptHoInfo(dto);
+
     }
 }
 

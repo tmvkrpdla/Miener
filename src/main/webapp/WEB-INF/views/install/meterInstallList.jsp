@@ -15,6 +15,15 @@
           rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/static/css/modal.css?${resourceVersion}" rel="stylesheet"/>
 
+
+
+    <script>
+        const seqHo = "${empty seqHo ? '' : seqHo}";
+        const seqMeter = "${empty seqMeter ? '' : seqMeter}";
+        const siteName = "${empty siteName ? '' : siteName}";
+        const mid = "${empty mid ? '' : mid}";
+    </script>
+
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
@@ -84,7 +93,7 @@
         </li>
     </ul>
 
-    <button class="save-button">저장하기</button>
+    <button id="saveMeterInfoBtn" class="save-button">저장하기</button>
 
     <div class="reg-image-container">
         <h3>사진 등록</h3>
@@ -106,7 +115,7 @@
                    onchange="handleMultipleFiles(this);">
         </div>
 
-        <button id="uploadAllBtn" class="save-button image-save-button">저장하기</button>
+<%--        <button id="uploadAllBtn" class="save-button image-save-button">저장하기</button>--%>
     </div>
 
 
@@ -122,8 +131,7 @@
     <div class="image-list-container">
         <h3>하드웨어 설치 사진</h3>
 
-        <div class="photo-grid">
-        </div>
+        <div class="photo-grid"></div>
     </div>
 
 </div>

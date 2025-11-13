@@ -135,7 +135,8 @@ function renderInstallationList(type, data) {
             dongName,
             hoName,
             mid,
-            seqHo
+            seqHo,
+            seqMeter
         } = item;
 
         if (isDcu) {
@@ -157,6 +158,7 @@ function renderInstallationList(type, data) {
         } else {
             const params = new URLSearchParams({
                 mid,
+                seqMeter,
                 siteName,
                 seqHo
             }).toString();

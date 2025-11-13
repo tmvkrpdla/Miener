@@ -1,9 +1,11 @@
 package com.miener.controller.install;
 
 import com.miener.dto.DcuUpdDTO;
+import com.miener.dto.HoUpdateDto;
 import com.miener.service.InstallService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -62,5 +64,22 @@ public class InstallRestController {
             result.put("message", e.getMessage());
         }
         return result;
+    }
+
+    @PutMapping("/api/ho/update")
+    public ResponseEntity<Map<String, Object>> updateHoHardwareInfo(@RequestBody HoUpdateDto hoUpdateDto) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            installService.updateHoHardware(hoUpdateDto);
+            response.put("success", true);
+            response.put("message", "하드웨어 정보가 성공적으로 업데이트되었습니다.");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "업데이트 중 서버 오류가 발생했습니다: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 }

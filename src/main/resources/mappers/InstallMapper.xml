@@ -21,4 +21,19 @@
         WHERE nSeqDcu = #{seqDcu}
     </update>
 
+
+    <update id="updateMeterInfo" parameterType="com.miener.dto.HoUpdateDto">
+        UPDATE meter
+        SET Mid     = #{mid},
+            MacAddr = #{meterMacAddress}
+        WHERE nSeqMeter = #{seqMeter}
+    </update>
+
+    <update id="updateAptHoInfo" parameterType="com.miener.dto.HoUpdateDto">
+        UPDATE aptho
+        SET nValueStart   = #{meterValueStart},
+            bBoundToModem = #{boundToModem}
+        WHERE nSeqAptHo = #{seqHo}
+    </update>
+
 </mapper>

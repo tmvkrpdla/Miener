@@ -112,7 +112,7 @@
                    onchange="handleMultipleFiles(this);">
         </div>
 
-        <button id="uploadAllBtn" class="save-button image-save-button">저장하기</button>
+<%--        <button id="uploadAllBtn" class="save-button image-save-button">저장하기</button>--%>
     </div>
 
 
