@@ -91,49 +91,40 @@ function drawImg(list_image) {
     });
 }
 
-
 /**
- * 💥 모든 사진을 순차적으로 업로드하는 함수
+ * 💥 모든 사진을 병렬로 업로드하는 함수
  * @param {Array<Object>} fileList - 업로드할 {id, file} 객체 배열
  * @param {string} seqWorker - 작업자 ID
  * @param {string} seqDcu - DCU 시퀀스 ID
+ * @returns {Promise<Object>} 성공/실패 건수를 포함하는 결과를 resolve
  */
 function uploadAllPhotos(fileList, seqWorker, seqDcu) {
 
-    //  DCU ID의 유효성 검증
+    // DCU ID의 유효성 검증
     if (!seqDcu) {
         alert("DCU ID가 유효하지 않아 업로드를 시작할 수 없습니다.");
-        return;
+        // Promise를 반환하여 호출자에게 오류를 전달
+        return Promise.reject(new Error("DCU ID가 유효하지 않습니다."));
     }
 
-    // 순차적 업로드를 위한 Promise 체인 또는 async/await 사용
-    let successfulUploads = 0;
-    const totalFiles = fileList.length;
-    let uploadedCount = 0; // 성공/실패와 관계없이 처리된 파일 수
-
-
-    // files 배열을 복사하여 사용 (업로드 중 배열이 변경되는 것을 방지)
     const filesToUpload = [...fileList];
+    const totalFiles = filesToUpload.length;
 
     // 1. 업로드 시작 시 로딩 모달 표시
     showLoadingModal(totalFiles);
 
-    // 모든 파일에 대한 Promise 배열 생성
-    const uploadPromises = filesToUpload.map((item) => {
+    let uploadedCount = 0; // 진행률 카운터 (클로저 내부에서 관리)
 
-        // uploadSinglePhoto가 Promise를 반환하므로 .then, .catch 사용 가능
+    const uploadPromises = filesToUpload.map((item) => {
         return uploadSinglePhoto(item.file, seqWorker, seqDcu)
             .then(() => {
-                // 개별 업로드 성공 시
-                successfulUploads++;
                 // 성공한 항목은 미리보기에서 제거 (선택 사항)
                 $(`#${item.id}`).remove();
-                return 'success';
+                return {status: 'fulfilled', name: item.file.name};
             })
             .catch((error) => {
-                // 개별 업로드 실패 시
                 console.error(`❌ 파일 업로드 실패 (${item.file.name}):`, error);
-                return 'fail';
+                return {status: 'rejected', name: item.file.name, reason: error};
             })
             .finally(() => {
                 // 2. 성공/실패 여부와 관계없이 처리된 파일 수 증가 및 모달 업데이트
@@ -142,25 +133,27 @@ function uploadAllPhotos(fileList, seqWorker, seqDcu) {
             });
     });
 
-    // 3. Promise.allSettled를 사용하여 모든 요청이 완료될 때까지 기다림
-    // Promise.allSettled는 요청 중 하나가 실패해도 나머지 결과를 기다립니다.
-    Promise.allSettled(uploadPromises)
+
+    // Promise.allSettled를 사용하여 모든 요청이 완료될 때까지 기다림
+    // map에서 .catch로 에러를 잡았기 때문에, 여기서 받는 results는 모두 status: 'fulfilled' 입니다.
+    return Promise.allSettled(uploadPromises)
         .then(results => {
             // 모든 파일 처리가 끝난 후 실행
-
-            // 최종 알림
-            // alert(`📸 업로드 완료! (성공: ${successfulUploads}건 / 전체: ${totalFiles}건)`);
+            const successfulUploads = results.filter(r => r.value && r.value.status === 'fulfilled').length;
+            const failedUploads = results.filter(r => r.value && r.value.status === 'rejected').length;
 
             // 4. 로딩 모달 숨김
             hideLoadingModal();
 
-            // 전역 파일 배열 초기화 및 화면 업데이트 (이전 단계에서 정의한 전역 배열)
-            uploadedFiles.splice(0, uploadedFiles.length);
-        })
-        .catch(error => {
-            // 이 catch 블록은 Promise.allSettled 자체의 에러(거의 발생 안 함)를 잡습니다.
-            console.error("최종 처리 중 예상치 못한 오류 발생:", error);
-            hideLoadingModal();
+            // 최종 알림
+            if (failedUploads === 0) {
+                alert(`✅ 모든 사진(${successfulUploads}건) 업로드를 완료했습니다.`);
+            } else {
+                alert(`⚠️ 업로드 완료! (성공: ${successfulUploads}건 / 실패: ${failedUploads}건)`);
+            }
+
+            // 호출자에게 결과 객체를 반환
+            return {total: totalFiles, success: successfulUploads, fail: failedUploads};
         });
 }
 
@@ -204,50 +197,98 @@ function renderingDcuInfo(data) {
     let dcuId = data.dcu_info.dcu_id;
     let mdmsId = data.dcu_info.mdms_id;
     let seqDcu = data.dcu_info.seq_dcu;
+    let lteSn = data.dcu_info.LteSn;
+    let sshPort = data.dcu_info.nPortSsh2;
+    let fepPort = data.dcu_info.port_fep;
+    let snmpPort = data.dcu_info.port_snmp;
 
+    // hidden input
     $('#ajaxSeqDcu').val(seqDcu);
-    $('#dcuId').val(dcuId);
-    $('#lteSn').val(data.dcu_info.LteSn);
-    $('#sshPort').val(data.dcu_info.nPortSsh2);
 
+    // input value 설정 + 기존값(data-old) 설정
+    $('#dcuId').val(dcuId).data('old', dcuId);
+    $('#lteSn').val(lteSn).data('old', lteSn);
+    $('#sshPort').val(sshPort).data('old', sshPort);
+    $('#fepPort').val(fepPort).data('old', fepPort);
+    $('#snmpPort').val(snmpPort).data('old', snmpPort);
+
+    // 기타 static 정보
     $('#ajaxMdmsId').text(mdmsId);
     $('#ajaxDcuIp').text(data.dcu_info.ip_dcu);
-    $('#fepPort').val(data.dcu_info.port_fep);
-    $('#snmpPort').val(data.dcu_info.port_snmp);
     $('#workerName').text(`${data.dcu_info.worker_name} (${data.dcu_info.company_name})`);
     $('#firstLastInstalled').text(data.dcu_info.time_dcu_installed);
 
 }
 
-function updDcuInfo() {
-    const dcuData = {
-        seqDcu: $('#ajaxSeqDcu').val(),
-        dcuId: $('#dcuId').val(),
-        lteSn: $('#lteSn').val(),
-        sshPort: $('#sshPort').val(),
-        fepPort: $('#fepPort').val(),
-        snmpPort: $('#snmpPort').val()
-    };
+// ===========================================
+// Promise 기반으로 DCU 정보 업데이트 함수 수정
+// ===========================================
+function updateDcuInfo() {
+    // Promise를 반환하도록 수정
+    return new Promise((resolve, reject) => {
+        const dcuData = {
+            seqDcu: $('#ajaxSeqDcu').val(),
+            dcuId: $('#dcuId').val(),
+            lteSn: $('#lteSn').val(),
+            sshPort: $('#sshPort').val(),
+            fepPort: $('#fepPort').val(),
+            snmpPort: $('#snmpPort').val()
+        };
 
-
-    $.ajax({
-        url: '../install/api/dcu/update',
-        type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(dcuData),
-        success: function (res) {
-            if (res.success) {
-                alert('DCU 정보가 업데이트되었습니다.');
-            } else {
-                alert('업데이트 실패: ' + res.message);
+        $.ajax({
+            url: '../install/api/dcu/update',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(dcuData),
+            success: function (res) {
+                if (res.success) {
+                    // alert('DCU 정보가 업데이트되었습니다.');
+                    console.log("DCU 정보 업데이트 성공");
+                    resolve(res); // 성공 시 Promise resolve
+                } else {
+                    alert('업데이트 실패: ' + res.message);
+                    reject(new Error(res.message)); // 실패 시 Promise reject
+                }
+            },
+            error: function (err) {
+                console.error('서버 오류 발생:', err);
+                alert('서버 오류 발생');
+                reject(err); // 오류 발생 시 Promise reject
             }
-        },
-        error: function (err) {
-            console.error(err);
-            alert('서버 오류 발생');
-        }
+        });
     });
+}
 
+function isDcuChanged() {
+    // 현재 입력 값 (항상 문자열)
+    const dcuId = $('#dcuId').val();
+    const lteSn = $('#lteSn').val();
+    const sshPort = $('#sshPort').val();
+    const fepPort = $('#fepPort').val();
+    const snmpPort = $('#snmpPort').val();
+
+    // 초기값 (숫자일 수 있음)
+    // .data()로 가져온 값에 .toString()을 적용하여 문자열로 강제 변환
+    const oldDcuId = String($('#dcuId').data('old') || '');
+    const oldLteSn = String($('#lteSn').data('old') || '');
+    const oldSshPort = String($('#sshPort').data('old') || '');
+    const oldFepPort = String($('#fepPort').data('old') || '');
+    const oldSnmpPort = String($('#snmpPort').data('old') || '');
+
+    // 추가: 양쪽 모두 trim()을 적용하여 혹시 모를 앞뒤 공백을 제거
+    const currentDcuId = dcuId.trim();
+    const currentLteSn = lteSn.trim();
+    const currentSshPort = sshPort.trim();
+    const currentFepPort = fepPort.trim();
+    const currentSnmpPort = snmpPort.trim();
+
+    return (
+        currentDcuId !== oldDcuId ||
+        currentLteSn !== oldLteSn ||
+        currentSshPort !== oldSshPort ||
+        currentFepPort !== oldFepPort ||
+        currentSnmpPort !== oldSnmpPort
+    );
 }
 
 
@@ -281,9 +322,69 @@ $(document).ready(function () {
         location.reload(); // 페이지 새로고침
     });
 
-    $('#saveDcuInfoBtn').on('click', function () {
-        updDcuInfo();
-    })
+    // ===========================================
+    // 클릭 이벤트 핸들러 수정 (async/await 적용)
+    // ===========================================
+    $('#saveDcuInfoBtn').on('click', async function () {
+        const $this = $(this);
+        const selectedWorker = '29'; // 실제로는 DOM에서 선택된 작업자 ID를 가져와야 함
+        const seqDcu = $("#ajaxSeqDcu").val(); // DCU ID를 DOM에서 가져옴
+
+        // 1. 유효성 검사
+        if (!selectedWorker) {
+            alert("작업자를 선택해주세요.");
+            return;
+        }
+
+        // `uploadedFiles`가 전역 변수라고 가정
+        if (typeof uploadedFiles === 'undefined' || uploadedFiles.length === 0) {
+            alert("등록할 사진을 선택해주세요.");
+            return;
+        }
+
+        // 2. 버튼 비활성화 (중복 클릭 방지)
+        $this.prop('disabled', true);
+
+        try {
+            let isSuccess = true; // 최종 성공 여부 플래그
+
+            if (isDcuChanged()) {
+                await updateDcuInfo();
+            } else {
+                console.log('DCU 정보에 변경 사항 없음, 업데이트 생략');
+            }
+
+            // 4. 모든 파일을 업로드 (완료될 때까지 await)
+            const uploadResult = await uploadAllPhotos(uploadedFiles, selectedWorker, seqDcu);
+
+            // 5. 업로드가 성공적으로 완료된 후, 전역 파일 목록 초기화 및 화면 업데이트
+            if (uploadResult && uploadResult.success > 0) {
+                // splice를 사용하여 배열을 비우고, DOM 업데이트 로직을 추가
+                uploadedFiles.splice(0, uploadedFiles.length);
+                // ex: $('#previewContainer').empty(); // 업로드 완료된 목록 화면에서도 제거
+            }
+
+            if (uploadResult.fail === 0) {
+                // 모든 파일이 성공적으로 업로드되었을 경우에만 이동
+                window.history.back();
+                // 또는 location.href = '이동할 페이지 경로';
+            } else {
+                // 파일 업로드에 실패한 항목이 있다면 (경고는 이미 uploadAllPhotos에서 표시됨)
+                // 페이지를 이동하지 않고 사용자가 실패 항목을 확인하도록 함
+                isSuccess = false;
+            }
+
+        } catch (error) {
+            // DCU 정보 업데이트 실패, uploadAllPhotos 내 seqDcu 오류 등
+            console.error("최종 처리 실패:", error);
+            // 개별 에러는 이미 처리되었으므로 추가 alert는 생략 가능
+
+        } finally {
+            // 6. 버튼 재활성화
+            $this.prop('disabled', false);
+        }
+    });
+
 });
 
 
@@ -307,6 +408,7 @@ $(document).on('click', '.delete-btn', function () {
 });
 
 
+/*
 // 💥 튜닝된 저장 버튼 클릭 이벤트
 $('#uploadAllBtn').on('click', function () {
     const selectedWorker = '29'; // 실제로는 DOM에서 선택된 작업자 ID를 가져와야 함
@@ -324,4 +426,4 @@ $('#uploadAllBtn').on('click', function () {
 
     // 모든 파일을 순차적으로 업로드하는 함수 호출
     uploadAllPhotos(uploadedFiles, selectedWorker, seqDcu);
-});
+});*/
