@@ -1,10 +1,7 @@
 package com.miener.service;
 
 import com.miener.dao.mariadb.InstallDAO;
-import com.miener.dto.DcuUpdDTO;
-import com.miener.dto.HoUpdateDto;
-import com.miener.dto.MeterInstallHistoryDto;
-import com.miener.dto.MeterInstallHistorySearchDto;
+import com.miener.dto.*;
 import com.miener.util.ManagerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -122,6 +119,17 @@ public class InstallService {
         }
 
         int result = installDAO.insertInstallHistory(historyDto);
+        return result == 1;
+    }
+
+    @Transactional
+    public boolean addDcuHistory(DcuInstallHistoryDto historyDto) {
+        // 필수 값 유효성 검사 (Controller에서 처리할 수도 있지만, Service에서도 한 번 더 확인)
+        if (historyDto.getSeqWorker() == null || historyDto.getSeqDcu() == null) {
+            throw new IllegalArgumentException("작업자 ID 또는 DCU ID가 누락되었습니다.");
+        }
+
+        int result = installDAO.insertDcuInstallHistory(historyDto);
         return result == 1;
     }
 

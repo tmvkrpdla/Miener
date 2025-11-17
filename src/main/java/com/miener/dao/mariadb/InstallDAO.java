@@ -1,9 +1,6 @@
 package com.miener.dao.mariadb;
 
-import com.miener.dto.DcuUpdDTO;
-import com.miener.dto.HoUpdateDto;
-import com.miener.dto.MeterInstallHistoryDto;
-import com.miener.dto.MeterInstallHistorySearchDto;
+import com.miener.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.json.simple.JSONArray;
 
@@ -36,6 +33,8 @@ public interface InstallDAO {
      * @return 삽입된 레코드 수 (성공 시 1)
      */
     int insertInstallHistory(MeterInstallHistoryDto historyDto);
+
+    int insertDcuInstallHistory(DcuInstallHistoryDto historyDto);
 
     List<Map> WkGetHoListBySiteForPaging(Map param);
 

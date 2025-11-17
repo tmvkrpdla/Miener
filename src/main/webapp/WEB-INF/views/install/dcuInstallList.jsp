@@ -18,6 +18,7 @@
         const dcuId = "${empty dcuId ? '' : dcuId}";
         const seqDcu = "${empty seqDcu ? '' : seqDcu}";
         const siteName = "${empty siteName ? '' : siteName}";
+        const seqSite = "${empty seqSite ? '' : seqSite}";
     </script>
 
 </head>
@@ -42,9 +43,10 @@
 
     <ul class="detail-list">
 
-        <li class="detail-item">
+        <li class="detail-item editable" data-editable="true">
             <span class="label">설치 위치</span>
-            <span class="value static">2동 1,2 라인 지하주차장</span>
+            <input type="text" class="value-input" id="location" value="">
+            <span class="arrow">&gt;</span>
         </li>
 
         <li class="detail-item editable" data-editable="true">

@@ -194,6 +194,7 @@ function uploadSinglePhoto(file, seqWorker, seqDcu) {
 function renderingDcuInfo(data) {
     console.log("data : ", data);
 
+    let location = data.dcu_info.dcu_location
     let dcuId = data.dcu_info.dcu_id;
     let mdmsId = data.dcu_info.mdms_id;
     let seqDcu = data.dcu_info.seq_dcu;
@@ -206,6 +207,7 @@ function renderingDcuInfo(data) {
     $('#ajaxSeqDcu').val(seqDcu);
 
     // input value 설정 + 기존값(data-old) 설정
+    $('#location').val(location).data('old', location);
     $('#dcuId').val(dcuId).data('old', dcuId);
     $('#lteSn').val(lteSn).data('old', lteSn);
     $('#sshPort').val(sshPort).data('old', sshPort);
@@ -232,7 +234,8 @@ function updateDcuInfo() {
             lteSn: $('#lteSn').val(),
             sshPort: $('#sshPort').val(),
             fepPort: $('#fepPort').val(),
-            snmpPort: $('#snmpPort').val()
+            snmpPort: $('#snmpPort').val(),
+            location: $('#location').val()
         };
 
         $.ajax({
@@ -261,6 +264,7 @@ function updateDcuInfo() {
 
 function isDcuChanged() {
     // 현재 입력 값 (항상 문자열)
+    const location = $('#location').val();
     const dcuId = $('#dcuId').val();
     const lteSn = $('#lteSn').val();
     const sshPort = $('#sshPort').val();
@@ -269,6 +273,7 @@ function isDcuChanged() {
 
     // 초기값 (숫자일 수 있음)
     // .data()로 가져온 값에 .toString()을 적용하여 문자열로 강제 변환
+    const oldDcuLocation = String($('#location').data('old') || '');
     const oldDcuId = String($('#dcuId').data('old') || '');
     const oldLteSn = String($('#lteSn').data('old') || '');
     const oldSshPort = String($('#sshPort').data('old') || '');
@@ -276,6 +281,7 @@ function isDcuChanged() {
     const oldSnmpPort = String($('#snmpPort').data('old') || '');
 
     // 추가: 양쪽 모두 trim()을 적용하여 혹시 모를 앞뒤 공백을 제거
+    const currentDcuLocation = location.trim();
     const currentDcuId = dcuId.trim();
     const currentLteSn = lteSn.trim();
     const currentSshPort = sshPort.trim();
@@ -283,6 +289,7 @@ function isDcuChanged() {
     const currentSnmpPort = snmpPort.trim();
 
     return (
+        currentDcuLocation !== oldDcuLocation ||
         currentDcuId !== oldDcuId ||
         currentLteSn !== oldLteSn ||
         currentSshPort !== oldSshPort ||
@@ -291,6 +298,41 @@ function isDcuChanged() {
     );
 }
 
+
+/**
+ * DCU 설치 이력을 서버에 추가합니다.
+ * @param {string} workerId - 설치 작업자 ID
+ * @param {string} seqDcu - 설치된 DCU ID (seqDcu)
+ * @returns {Promise<void>} - 성공/실패와 관계없이 resolve되어 메인 로직이 계속 진행되도록 합니다.
+ */
+function addDcuInstallHistory(workerId, seqDcu, seqSite) {
+    const historyData = {
+        seqWorker: workerId,
+        seqDcu: seqDcu,
+        seqSite: seqSite
+    };
+
+    return new Promise((resolve) => {
+        $.ajax({
+            url: '../install/api/dcu/history/add',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(historyData),
+            success: function (res) {
+                if (res.success) {
+                    console.log('DCU 설치 이력이 성공적으로 추가되었습니다.');
+                } else {
+                    console.error('DCU 설치 이력 추가 실패:', res.message);
+                }
+                resolve();
+            },
+            error: function (err) {
+                console.error('DCU 설치 이력 추가 중 서버 오류 발생:', err);
+                resolve();
+            }
+        });
+    });
+}
 
 $(document).ready(function () {
     // URL 파라미터에서 dcuId 가져오기
@@ -330,58 +372,85 @@ $(document).ready(function () {
         const selectedWorker = '29'; // 실제로는 DOM에서 선택된 작업자 ID를 가져와야 함
         const seqDcu = $("#ajaxSeqDcu").val(); // DCU ID를 DOM에서 가져옴
 
+        // ✅ 1-A. DCU 위치 값으로 최초 설치 여부 판단
+        const oldLocation = $('#location').data('old') || '';
+
+        const isFirstInstall = (oldLocation === ''); // location 값이 비어 있으면 최초 설치로 간주
+
+        let shouldGoBack = true;
+
         // 1. 유효성 검사
         if (!selectedWorker) {
             alert("작업자를 선택해주세요.");
             return;
         }
 
-        // `uploadedFiles`가 전역 변수라고 가정
-        if (typeof uploadedFiles === 'undefined' || uploadedFiles.length === 0) {
-            console.log("등록할 사진 없음.");
-            return;
-        }
+        /*   // `uploadedFiles`가 전역 변수라고 가정
+           if (typeof uploadedFiles === 'undefined' || uploadedFiles.length === 0) {
+               console.log("등록할 사진 없음.");
+               return;
+           }*/
 
         // 2. 버튼 비활성화 (중복 클릭 방지)
         $this.prop('disabled', true);
 
         try {
-            let isSuccess = true; // 최종 성공 여부 플래그
 
+            // 3. DCU 정보 업데이트 (변경 사항 체크)
             if (isDcuChanged()) {
                 await updateDcuInfo();
             } else {
                 console.log('DCU 정보에 변경 사항 없음, 업데이트 생략');
             }
 
-            // 4. 모든 파일을 업로드 (완료될 때까지 await)
-            const uploadResult = await uploadAllPhotos(uploadedFiles, selectedWorker, seqDcu);
-
-            // 5. 업로드가 성공적으로 완료된 후, 전역 파일 목록 초기화 및 화면 업데이트
-            if (uploadResult && uploadResult.success > 0) {
-                // splice를 사용하여 배열을 비우고, DOM 업데이트 로직을 추가
-                uploadedFiles.splice(0, uploadedFiles.length);
-                // ex: $('#previewContainer').empty(); // 업로드 완료된 목록 화면에서도 제거
+            // 3-1. ✅ DCU 최초 설치 이력 추가
+            if (isFirstInstall) {
+                console.log("DCU 위치 값이 없어 최초 설치 이력을 추가합니다.");
+                // seqDcu가 유효한 값이어야 이력을 남길 수 있음
+                if (seqDcu) {
+                    await addDcuInstallHistory(selectedWorker, seqDcu, seqSite);
+                } else {
+                    console.warn("seqDcu가 없어 DCU 설치 이력을 건너뜁니다.");
+                    // 이력 추가 실패하더라도 메인 로직은 계속 진행
+                }
+            } else {
+                console.log("DCU 위치 값이 존재하여 설치 이력을 추가하지 않습니다.");
             }
 
-            if (uploadResult.fail === 0) {
-                // 모든 파일이 성공적으로 업로드되었을 경우에만 이동
-                window.history.back();
-                // 또는 location.href = '이동할 페이지 경로';
+            // 4. 사진 업로드 유효성 검사
+            const hasFiles = (typeof uploadedFiles !== 'undefined' && uploadedFiles.length > 0);
+
+            if (hasFiles) {
+                // 4-1. 모든 파일을 업로드 (완료될 때까지 await)
+                const uploadResult = await uploadAllPhotos(uploadedFiles, selectedWorker, seqDcu);
+
+                // 5. 업로드가 성공적으로 완료된 후, 전역 파일 목록 초기화 및 화면 업데이트
+                if (uploadResult && uploadResult.success > 0) {
+                    uploadedFiles.splice(0, uploadedFiles.length);
+                    // ex: $('#previewContainer').empty();
+                }
+
+                // 업로드 실패 시
+                if (uploadResult.fail > 0) {
+                    shouldGoBack = false;
+                }
             } else {
-                // 파일 업로드에 실패한 항목이 있다면 (경고는 이미 uploadAllPhotos에서 표시됨)
-                // 페이지를 이동하지 않고 사용자가 실패 항목을 확인하도록 함
-                isSuccess = false;
+                console.log("등록할 사진 없음. DCU 정보 업데이트만 성공했으므로 이동합니다.");
+                // 사진이 없더라도 업데이트가 성공했으므로 페이지 이동 (아래 finally에서 처리)
             }
 
         } catch (error) {
             // DCU 정보 업데이트 실패, uploadAllPhotos 내 seqDcu 오류 등
             console.error("최종 처리 실패:", error);
-            // 개별 에러는 이미 처리되었으므로 추가 alert는 생략 가능
-
+            shouldGoBack = false; // 오류 발생 시 페이지 이동 금지
         } finally {
             // 6. 버튼 재활성화
             $this.prop('disabled', false);
+
+            // 7. 성공 여부에 따라 페이지 이동
+            if (shouldGoBack) {
+                // window.history.back();
+            }
         }
     });
 

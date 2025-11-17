@@ -1,9 +1,6 @@
 package com.miener.controller.install;
 
-import com.miener.dto.DcuUpdDTO;
-import com.miener.dto.HoUpdateDto;
-import com.miener.dto.MeterInstallHistoryDto;
-import com.miener.dto.MeterInstallHistorySearchDto;
+import com.miener.dto.*;
 import com.miener.service.InstallService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -216,6 +213,37 @@ public class InstallRestController {
             response.put("success", false);
             response.put("message", "계량기 설치 이력 조회 중 서버 오류 발생: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
+        }
+    }
+
+
+    @PostMapping("/api/dcu/history/add")
+    public ResponseEntity<Map<String, Object>> addDcuInstallHistory(@RequestBody DcuInstallHistoryDto historyDto) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            boolean success = installService.addDcuHistory(historyDto);
+
+            if (success) {
+                response.put("success", true);
+                response.put("message", "설치 이력이 성공적으로 추가되었습니다.");
+            } else {
+                response.put("success", false);
+                response.put("message", "설치 이력 추가에 실패했습니다.");
+            }
+            return ResponseEntity.ok(response);
+
+        } catch (IllegalArgumentException e) {
+            // 유효성 검사 실패 (작업자 ID, dcu ID 누락 등)
+            response.put("success", false);
+            response.put("message", "입력 값 오류: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+
+        } catch (Exception e) {
+            // 기타 DB 오류 또는 서비스 오류
+            response.put("success", false);
+            response.put("message", "서버 처리 중 오류가 발생했습니다: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
         }
     }
 

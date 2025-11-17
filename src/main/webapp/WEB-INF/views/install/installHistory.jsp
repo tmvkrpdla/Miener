@@ -87,7 +87,7 @@
 </div>
 
 <div class="search-result-count">
-    검색 결과 : <span id="resultCount">0</span>
+    검색 결과 : <span id="resultCount"></span>
 </div>
 
 <div class="card-list" id="installationList">

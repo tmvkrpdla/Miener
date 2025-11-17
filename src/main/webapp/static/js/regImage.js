@@ -159,14 +159,16 @@ function renderInstallationList(type, data) {
                 location,
                 dcuId,
                 seqDcu,
-                siteName
+                siteName,
+                seqSite
             } = item;
 
             // ✅ URLSearchParams 사용으로 안전하게 파라미터 구성
             const params = new URLSearchParams({
                 dcuId,
                 seqDcu,
-                siteName
+                siteName,
+                seqSite
             }).toString();
 
             tr.innerHTML = `

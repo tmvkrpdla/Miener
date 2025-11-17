@@ -71,11 +71,12 @@ function renderInstallationList(list) {
             seqHo: seqHo
         }).toString();
 
+
         // const badgeClass = item.type === "계량기" ? "badge-meter" : "badge-dcu";
         const cardHtml = `
                 <div class="card-item" onclick="location.href='../install/meterInstallList?${params}'">
                     <div class="top-row">
-                        <span>${item.installDate} · ${item.workerName} · ${item.MetroProv} · ${item.CityDist}</span>
+                        <span>${formatTimestamp(item.installDate)} · ${item.workerName} · ${item.MetroProv} · ${item.CityDist}</span>
                         <span class="badge-meter">계량기</span>
                     </div>
                     <div class="main-row">
@@ -167,8 +168,6 @@ $(document).ready(function () {
 
     // 페이지 진입 시 데이터 로드
     loadInstallationList();
-
-
 
 
     $('#historyBack').on('click', function () {

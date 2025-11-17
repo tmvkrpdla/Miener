@@ -13,6 +13,7 @@ public class DcuUpdDTO {
     private Long seqDcu;
     private String dcuId;
     private String lteSn;
+    private String location;
     private Integer sshPort;
     private Integer fepPort;
     private Integer snmpPort;

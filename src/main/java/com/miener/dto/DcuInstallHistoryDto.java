@@ -7,9 +7,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class MeterInstallHistoryDto {
+public class DcuInstallHistoryDto {
 
+    private String seq;
     private String seqWorker;
-    private String seqHo;
+    private String seqDcu;
+    private String seqSite;
 
 }
