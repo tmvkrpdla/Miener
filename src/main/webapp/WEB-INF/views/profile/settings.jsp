@@ -65,7 +65,7 @@
 
         /* 🔹 메인 컨테이너 */
         .app-content {
-            margin-top: 70px;
+            margin-top: 20px;
             padding: 20px;
             max-width: 480px;
             margin-left: auto;
@@ -277,16 +277,18 @@
             <div class="feature-item"><span>🛡️</span>
                 <p>거주인증</p></div>
         </div>
+
     </div>
 </main>
 
-<!-- 🔹 하단 고정 네비게이션 -->
-<nav class="bottom-nav">
-    <button class="active">🏠</button>
-    <button>📊</button>
-    <button>💬</button>
-    <button>👤</button>
-</nav>
+<%--<!-- 🔹 하단 고정 네비게이션 -->--%>
+<%--<nav class="bottom-nav">--%>
+<%--    <button class="active">🏠</button>--%>
+<%--    <button>📊</button>--%>
+<%--    <button>💬</button>--%>
+<%--    <button>👤</button>--%>
+<%--</nav>--%>
 
-</body>
+</body>\
+
 </html>

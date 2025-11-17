@@ -24,16 +24,112 @@
 
     <update id="updateMeterInfo" parameterType="com.miener.dto.HoUpdateDto">
         UPDATE meter
-        SET Mid     = #{mid},
-            MacAddr = #{meterMacAddress}
+        SET MacAddr = #{meterMacAddress}
         WHERE nSeqMeter = #{seqMeter}
     </update>
 
     <update id="updateAptHoInfo" parameterType="com.miener.dto.HoUpdateDto">
         UPDATE aptho
-        SET nValueStart   = #{meterValueStart},
-            bBoundToModem = #{boundToModem}
+        SET nValueStart = #{meterValueStart},
+        bBoundToModem = #{boundToModem},
+        nSeqMeter = #{seqMeter},
+
+        dtMeterInstalled =
+        <if test="seqMeter != null">
+            IFNULL(dtMeterInstalled, NOW())
+        </if>
+        <if test="seqMeter == null">
+            NULL
+        </if>
         WHERE nSeqAptHo = #{seqHo}
     </update>
+
+    <insert id="insertInstallHistory"
+            parameterType="com.miener.dto.MeterInstallHistoryDto"
+            useGeneratedKeys="true" keyProperty="seq">
+        INSERT INTO meter_install_history
+            (nSeqWorker, nSeqHo, dtInstalled)
+        VALUES (#{seqWorker}, #{seqHo}, NOW())
+    </insert>
+
+    <select id="WkGetHoListBySiteForPaging" parameterType="Map" resultType="map">
+        call WkGetHoListBySiteForPaging(${seqSite}, ${IndexFrom}, ${IndexTo}, ${seqCode})
+    </select>
+
+    <select id="getSeqMeterByMid" parameterType="String" resultType="Long">
+        SELECT nSeqMeter
+        FROM meter
+        WHERE Mid = #{mid}
+    </select>
+
+
+    <select id="getMeterInstallationHistory" parameterType="com.miener.dto.MeterInstallHistorySearchDto"
+            resultType="map">
+        SELECT
+        s.name AS siteName,
+        ad.Name AS dongName,
+        ah.name AS hoName,
+        s.MetroProv,
+        s.CityDist,
+        a.Name AS workerName,
+        m.mid,
+        ah.MidPrev,
+        mih.dtInstalled AS installDate,
+        mih.nSeqHo AS seqHo,
+        ah.nSeqMeter as seqMeter,
+        ah.nSeqAptHo as seqHo
+        FROM meter_install_history mih
+        LEFT JOIN aptho ah ON ah.nSeqAptHo = mih.nSeqHo
+        LEFT JOIN aptdong ad ON ad.nSeqAptDong = ah.nSeqAptDong
+        LEFT JOIN site s ON s.nSeqSite = ad.nSeqSite
+        LEFT JOIN admin a ON a.nSeqAdmin = mih.nSeqWorker
+        LEFT JOIN meter m ON ah.nSeqMeter = m.nSeqMeter
+
+        <where>
+            <if test="seqWorker != null">
+                AND mih.nSeqWorker = #{seqWorker}
+            </if>
+            <if test="metroProv != null and metroProv != ''">
+                AND s.MetroProv = #{metroProv}
+            </if>
+            <if test="installDateFrom != null and installDateFrom != ''">
+                AND mih.dtInstalled <![CDATA[ >= ]]> DATE(#{installDateFrom})
+            </if>
+            <if test="installDateTo != null and installDateTo != ''">
+                AND mih.dtInstalled <![CDATA[ <= ]]> DATE_ADD(DATE(#{installDateTo}), INTERVAL 1 DAY)
+            </if>
+        </where>
+
+        ORDER BY mih.dtInstalled DESC
+        <if test="limit != null and offset != null">
+            LIMIT #{limit} OFFSET #{offset}
+        </if>
+    </select>
+
+    <select id="countMeterInstallationHistory" parameterType="com.miener.dto.MeterInstallHistorySearchDto"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM meter_install_history mih
+        LEFT JOIN aptho ah ON ah.nSeqAptHo = mih.nSeqHo
+        LEFT JOIN aptdong ad ON ad.nSeqAptDong = ah.nSeqAptDong
+        LEFT JOIN site s ON s.nSeqSite = ad.nSeqSite
+        LEFT JOIN admin a ON a.nSeqAdmin = mih.nSeqWorker
+        LEFT JOIN meter m ON ah.nSeqMeter = m.nSeqMeter
+
+        <where>
+            <if test="seqWorker != null">
+                AND mih.nSeqWorker = #{seqWorker}
+            </if>
+            <if test="metroProv != null and metroProv != ''">
+                AND s.MetroProv = #{metroProv}
+            </if>
+            <if test="installDateFrom != null and installDateFrom != ''">
+                AND mih.dtInstalled <![CDATA[ >= ]]> DATE(#{installDateFrom})
+            </if>
+            <if test="installDateTo != null and installDateTo != ''">
+                AND mih.dtInstalled <![CDATA[ <= ]]> DATE_ADD(DATE(#{installDateTo}), INTERVAL 1 DAY)
+            </if>
+        </where>
+    </select>
 
 </mapper>

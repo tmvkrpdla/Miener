@@ -19,7 +19,6 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
-<%--<%@ include file="/WEB-INF/views/common/navigation.jsp" %>--%>
 
 
 <div class="page-header">

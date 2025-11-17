@@ -311,7 +311,6 @@ function isHoChanged() {
 function updHoInfo() {
     // 변경 사항이 없으면 바로 종료
     if (!isHoChanged()) {
-        // alert("변경된 하드웨어 정보가 없습니다.");
         return Promise.resolve(); // Promise를 반환하여 호출 체인을 유지
     }
 
@@ -359,6 +358,41 @@ function updHoInfo() {
 }
 
 
+/**
+ * 기존 MID가 비어있었을 때 (최초 설치 시) 설치 이력을 추가하는 함수
+ * 이력 추가 실패 시에도 메인 작업 흐름을 막지 않기 위해 resolve 처리합니다.
+ * @param {string} workerId - 작업을 수행한 작업자 ID (nSeqWorker)
+ * @returns {Promise<void>} 비동기 처리를 위한 Promise 반환
+ */
+function addInstallHistory(workerId) {
+    const historyData = {
+        seqWorker: workerId,
+        seqHo: seqHo // 전역/상위 스코프에서 가져옴 (updHoInfo와 동일)
+        // dtInstalled는 서버에서 자동 생성될 것으로 가정합니다.
+    };
+
+    return new Promise((resolve) => { // reject 대신 resolve를 사용하여 메인 흐름을 이어갑니다.
+        $.ajax({
+            url: '../install/api/history/add/meter', // 설치 이력 추가를 위한 API 엔드포인트
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(historyData),
+            success: function (res) {
+                if (res.success) {
+                    console.log('설치 이력이 성공적으로 추가되었습니다.');
+                } else {
+                    console.error('설치 이력 추가 실패:', res.message);
+                }
+                resolve(); // 성공 또는 실패와 관계없이 다음 단계로 이동
+            },
+            error: function (err) {
+                console.error('설치 이력 추가 중 서버 오류 발생:', err);
+                resolve(); // 서버 오류 시에도 다음 단계로 이동
+            }
+        });
+    });
+}
+
 $(document).ready(function () {
 
     console.log(`[DEBUG] 현재 페이지 meterId: ${mid}`);
@@ -399,15 +433,28 @@ $(document).ready(function () {
         const $this = $(this);
         const selectedWorker = '29'; // 실제로는 DOM에서 선택된 작업자 ID를 가져와야 함
 
+        const oldMid = $('#mid').data('old') || '';
+        let shouldGoBack = false; // 최종적으로 페이지를 이동할지 결정하는 플래그
+
         // 1. 버튼 비활성화 (중복 클릭 방지)
         $this.prop('disabled', true);
 
         try {
-            // 2. 호(Ho) 정보 업데이트 (updHoInfo 내부에서 변경 사항을 체크하고 AJAX 요청)
-            // updHoInfo는 Promise를 반환해야 하며, 내부에서 변경 없으면 resolve 됩니다.
+            // 2. 호(Ho) 정보 업데이트
             await updHoInfo();
 
-            // 3. 사진 업로드 유효성 검사
+            // updHoInfo가 오류 없이 완료되면 기본적으로 페이지 이동 가능 (shouldGoBack = true)
+            shouldGoBack = true;
+
+            // 2-1. 기존 MID가 Falsy 값일 경우에만 설치 이력 추가
+            if (!oldMid) {
+                console.log("기존 MID가 없어 설치 이력을 추가합니다.");
+                await addInstallHistory(selectedWorker);
+            } else {
+                console.log("기존 MID가 존재하여 설치 이력을 추가하지 않습니다.");
+            }
+
+            // 3. 작업자 유효성 검사
             if (!selectedWorker) {
                 alert("작업자를 선택해주세요.");
                 return; // finally로 이동하여 버튼 재활성화
@@ -418,30 +465,40 @@ $(document).ready(function () {
                 return; // finally로 이동하여 버튼 재활성화
             }
 
-            // 4. 모든 파일을 병렬로 업로드하고 완료를 대기
-            // uploadAllPhotos는 Promise를 반환합니다.
-            const uploadResult = await uploadAllPhotos(uploadedFiles, selectedWorker, seqHo);
+            // 4. 사진 업로드 처리
+            if (typeof uploadedFiles !== 'undefined' && uploadedFiles.length > 0) {
+                // 4-1. 파일이 있으면 업로드 실행 및 완료 대기
+                const uploadResult = await uploadAllPhotos(uploadedFiles, selectedWorker, seqHo);
 
-            // 5. 성공 시 파일 목록 초기화
-            if (uploadResult && uploadResult.success > 0) {
-                // 전역 파일 목록 초기화
-                uploadedFiles.splice(0, uploadedFiles.length);
-            }
+                // 5. 성공 시 파일 목록 초기화
+                if (uploadResult && uploadResult.success > 0) {
+                    uploadedFiles.splice(0, uploadedFiles.length);
+                }
 
-            // 6. 모든 작업이 오류 없이 완료되고 파일 업로드도 전부 성공했을 경우만 페이지 이동
-            if (uploadResult.fail === 0) {
-                window.history.back();
+                // 6. 업로드 실패 항목이 하나라도 있다면 페이지 이동 금지
+                if (uploadResult.fail > 0) {
+                    shouldGoBack = false;
+                    // 업로드 실패 항목 알림은 uploadAllPhotos 내에서 처리되었다고 가정
+                }
+
+            } else {
+                // 파일이 없음: 업로드 로직 전체를 건너뛰고, shouldGoBack은 2단계 성공 상태(true) 유지
+                console.log("등록할 사진 없음. 업데이트만 성공하면 페이지 이동합니다.");
             }
-            // 업로드 실패 항목이 있다면 경고 메시지(uploadAllPhotos 내 alert)를 보여주고 현 페이지 유지
 
         } catch (error) {
-            // DCU 업데이트 실패 또는 seqHo 유효성 오류 등 발생 시
+            // updHoInfo 실패 시
             console.error("최종 처리 실패:", error);
-            // 오류 알림은 개별 함수(updHoInfo, uploadAllPhotos) 내에서 처리되었다고 가정
+            shouldGoBack = false; // 오류 발생 시 페이지 이동 금지
 
         } finally {
             // 7. 성공/실패와 관계없이 버튼 재활성화
             $this.prop('disabled', false);
+
+            // 8. 모든 필수 작업이 성공하고, 파일 업로드에 실패가 없었을 경우 페이지 이동
+            if (shouldGoBack) {
+                window.history.back();
+            }
         }
     });
 

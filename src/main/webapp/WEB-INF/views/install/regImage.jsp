@@ -22,6 +22,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/i18n/ko.min.js"></script>
     <%--select2 라이브러리--%>
 
+
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
@@ -53,10 +54,10 @@
 
             <div class="swiper-slide hardware-card" data-type="meter">
                 <div class="card-title">계량기 / 계측기</div>
-                <div><span id="meterCnt" class="card-main"></span><span>개 (모뎀 545)</span></div>
+                <div><span id="meterCnt" class="card-main"></span><span>개 (모뎀 <span id="modemCnt"></span>)</span></div>
                 <div class="card-sub">
-                    세대부 908 (모뎀 454)<br>
-                    공용부 91 (모뎀 91)
+                  <%--  세대부 908 (모뎀 454)<br>
+                    공용부 91 (모뎀 91)--%>
                 </div>
             </div>
 
@@ -71,6 +72,32 @@
     <div class="filter-container">
         <select id="selectDongForMeter"></select>
         <select id="selectHoForMeter"></select>
+
+        <!-- 호 선택 입력 -->
+       <%-- <input id="selectHoForMeterInput"
+               type="text"
+               class="form-control"
+               placeholder="호 선택"
+               readonly
+               style="cursor:pointer;">
+
+        <!-- Bootstrap Bottom Sheet -->
+        <div class="offcanvas offcanvas-bottom h-75" tabindex="-1" id="hoBottomSheet">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">호 선택</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+            </div>
+
+            <div class="offcanvas-body">
+                <!-- 검색창 -->
+                <input type="text" id="searchHoInput" class="form-control mb-3" placeholder="검색">
+
+                <!-- 리스트 -->
+                <ul id="hoListContainer" class="list-group">
+                    <!-- JS로 항목 렌더링 -->
+                </ul>
+            </div>
+        </div>--%>
     </div>
 
     <div class="search-result-count">

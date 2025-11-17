@@ -14,14 +14,15 @@
 
 <script src="${pageContext.request.contextPath}/static/js/lib/jquery-3.7.1.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/common/common.js?${resourceVersion}"></script>
 <script src="${pageContext.request.contextPath}/static/js/common/enernet_api.js?${resourceVersion}"></script>
 
 
-
 <link href="${pageContext.request.contextPath}/static/css/common.css?${resourceVersion}" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/bottomSheetSelect.css?${resourceVersion}" rel="stylesheet"/>
 
 
 

@@ -1,9 +1,5 @@
 const API_URL = 'https://smartami.kr/api/v2';
 
-
-// Bootstrap Offcanvas 인스턴스
-// const hoBottomSheet = new bootstrap.Offcanvas('#hoBottomSheet');
-
 let cachedHwData = {
     dcu: [],
     meter: []
@@ -53,33 +49,6 @@ function renderSiteList(siteList) {
 
 }
 
-function getMeterListBySite(seqSite) {
-
-    const apiUrl = "../install/getAptMeter"
-
-    const formData = {
-        seqSite: seqSite,
-        seqCode: 12,
-        type: 'APT'
-        // seqDong: $("#dongSelect").val(),
-        // seqHo: $("#hoSelect").val()
-    };
-
-    console.log("formData : ", formData);
-
-    return $.ajax({
-        url: apiUrl,
-        method: 'GET',
-        data: formData
-    })
-        .then(response => response)
-        .catch(() => {
-            alert('데이터를 불러오지 못했습니다.');
-            return null;
-        });
-
-}
-
 // === 장비 데이터 호출 ===
 function getHwListBySite({
                              seqSite,
@@ -126,18 +95,12 @@ function renderInstallationList(type, data) {
     thead.innerHTML = '';
     tbody.innerHTML = '';
 
-    // 1. mid_new 값이 ""가 아닌(즉, 계량기가 설정된) 요소만 필터링
-    const installedMeterCount = cachedHwData.meter.filter(item => {
-        // mid_new가 null이 아니면서, 빈 문자열 ""도 아닌 경우를 카운트
-        return item.mid_new && item.mid_new !== "";
-    }).length;
-
     // 전체 카운트 반영
     $dcuCnt.text(cachedHwData.dcu.length);
-    $meterCnt.text(installedMeterCount);
+    $meterCnt.text(cachedHwData.meter.length);
 
     // (boundToModem === true인 경우)
-    const modemBoundMeters = cachedHwData.meter.filter(meter => meter.bound_to_modem === 'true').length;
+    const modemBoundMeters = cachedHwData.meter.filter(meter => meter.boundModem === 'true').length;
     $modemCnt.text(modemBoundMeters);
 
     // 헤더
@@ -147,21 +110,28 @@ function renderInstallationList(type, data) {
         thead.innerHTML = `<tr><th>동</th><th>호</th><th>계량기 ID</th></tr>`;
     }
 
-    // 타겟 페이지 경로는 반복문 밖에서 미리 정의
-    const targetPage = type === "dcu" ? "../install/dcuInstallList" : "../install/meterInstallList";
-    const isDcu = type === "dcu";
+    // === 데이터 ===
+    resultCount.textContent = data.length;
 
     data.forEach(item => {
         const tr = document.createElement('tr');
+        const isDcu = type === "dcu";
+        const targetPage = isDcu ? "../install/dcuInstallList" : "../install/meterInstallList";
+
+        // === 공통 변수 구조 분해 ===
+        const {
+            location,
+            dcuId,
+            seqDcu,
+            siteName,
+            dongName,
+            hoName,
+            mid,
+            seqHo,
+            seqMeter
+        } = item;
 
         if (isDcu) {
-            const {
-                location,
-                dcuId,
-                seqDcu,
-                siteName
-            } = item;
-
             // ✅ URLSearchParams 사용으로 안전하게 파라미터 구성
             const params = new URLSearchParams({
                 dcuId,
@@ -170,47 +140,30 @@ function renderInstallationList(type, data) {
             }).toString();
 
             tr.innerHTML = `
-                <td>${location || '-'}</td>
-                <td>
-                    <a href="${targetPage}?${params}" class="dcu-link" data-id="${dcuId}">
-                        ${dcuId}
-                    </a>
-                </td>
-            `;
+            <td>${location || '-'}</td>
+            <td>
+                <a href="${targetPage}?${params}" class="dcu-link" data-id="${dcuId}">
+                    ${dcuId}
+                </a>
+            </td>
+        `;
         } else {
-
-            const {
-                dong_name,
-                ho_name,
-                mid_new,
-                siteName,
-                seq_ho,
-                seqMeter,
-                seqHo
-            } = item;
-
-            // 변수 보정 로직은 유지
-            const finalSeqMeter = seqMeter || item.seq_meter;
-            const finalSeqHo = seqHo || seq_ho;
-            const finalMidNew = mid_new || item.midNew;
-
-            // ✅ URL 파라미터를 언더바('_') 없이 CamelCase로 구성
             const params = new URLSearchParams({
-                mid: finalMidNew,
-                seqMeter: finalSeqMeter,
-                siteName: siteName,
-                seqHo: finalSeqHo
+                mid,
+                seqMeter,
+                siteName,
+                seqHo
             }).toString();
 
             tr.innerHTML = `
-                <td>${dong_name || '-'}</td>
-                <td>${ho_name || '-'}</td>
-                <td>
-                    <a href="${targetPage}?${params}" class="meter-link" data-id="${mid_new}">
-                        ${mid_new || '-'}
-                    </a>
-                </td>
-            `;
+            <td>${dongName || '-'}</td>
+            <td>${hoName || '-'}</td>
+            <td>
+                <a href="${targetPage}?${params}" class="meter-link" data-id="${mid}">
+                    ${mid}
+                </a>
+            </td>
+        `;
         }
 
         tbody.appendChild(tr);
@@ -261,26 +214,6 @@ function getCardDtype() {
     return activeSlide.dataset.type;
 }
 
-
-// 호 리스트 렌더링 함수 (바텀시트용)
-function renderHoList(hoList) {
-    const $list = $("#hoListContainer");
-    $list.empty();
-
-    if (!hoList || hoList.length === 0) {
-        $list.append(`<li class="list-group-item text-center text-muted">호 정보 없음</li>`);
-        return;
-    }
-
-    for (const ho of hoList) {
-        $list.append(`
-            <li class="list-group-item" data-value="${ho.seq_ho}">
-                ${ho.ho_name}호
-            </li>
-        `);
-    }
-}
-
 // === 문서 준비 후 ===
 $(document).ready(async function () {
 
@@ -329,18 +262,12 @@ $(document).ready(async function () {
         try {
             const [dcuData, meterData] = await Promise.all([
                 getHwListBySite({seqSite, hwType: "dcu"}),
-                // getHwListBySite({seqSite, hwType: "meter"})
-                getMeterListBySite(seqSite)
+                getHwListBySite({seqSite, hwType: "meter"})
             ]);
 
-            console.log("dcuData : ", dcuData);
-            console.log("meterData : ", meterData);
-
-            cachedHwData = {dcu: dcuData || [], meter: meterData.list_ho || []};
+            cachedHwData = {dcu: dcuData || [], meter: meterData || []};
             renderInstallationList(type, cachedHwData[type]);
             callBackForTypeSelectEvent(seqSite, type);
-
-            console.log("cachedHwData : ", cachedHwData);
 
         } catch (err) {
             console.error(err);
@@ -360,7 +287,7 @@ $(document).ready(async function () {
         // const seqCode = 12;
 
         const data = _seqDong && _seqDong !== '선택'
-            ? cachedHwData[hwType].filter(item => item.dong_name === dongName)
+            ? cachedHwData[hwType].filter(item => item.dongName === dongName)
             : cachedHwData[hwType];
 
         renderInstallationList(hwType, data);
@@ -387,7 +314,7 @@ $(document).ready(async function () {
         const finalHoName = $(this).val() && $(this).val() !== '선택' ? hoName : '';
 
         const data = cachedHwData[hwType].filter(item =>
-            item.dong_name === dongName && (!finalHoName || item.ho_name === finalHoName)
+            item.dongName === dongName && (!finalHoName || item.hoName === finalHoName)
         );
 
         renderInstallationList(hwType, data);
@@ -397,6 +324,8 @@ $(document).ready(async function () {
         window.location.href = '../profile/settings';
     })
 
+    // 초기 단지 리스트
+    getSiteList('apt');
 
     $('#selectHoForMeter').select2({
         language: "ko",
@@ -406,39 +335,4 @@ $(document).ready(async function () {
         minimumResultsForSearch: 1, // 항상 검색창 표시
         width: '100%' // 부모 요소 너비에 맞춤
     });
-
-
-    /* // 바텀시트 열기 (input 클릭 시)
-     $("#selectHoForMeterInput").on("click", function () {
-         hoBottomSheet.show();
-     });
-
-
- // 리스트에서 클릭하여 선택
-     $("#hoListContainer").on("click", "li", function () {
-         const seqHo = $(this).data("value");
-         const hoName = $(this).text();
-
-         // input에 값 반영
-         $("#selectHoForMeterInput").val(hoName);
-         $("#selectHoForMeterInput").data("value", seqHo); // seq_ho 값 저장
-
-         // 바텀시트 닫기
-         hoBottomSheet.hide();
-     });
- */
-
-// 검색 기능
-    $("#searchHoInput").on("input", function () {
-        const keyword = $(this).val().toLowerCase();
-
-        $("#hoListContainer li").each(function () {
-            const text = $(this).text().toLowerCase();
-            $(this).toggle(text.includes(keyword));
-        });
-    });
-
-
-    // 초기 단지 리스트
-    getSiteList('apt');
 });

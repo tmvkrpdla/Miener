@@ -341,3 +341,6 @@ input#searchKeyword {
     opacity: 0.9;
 }
 
+a {
+    text-decoration : none !important;
+}
