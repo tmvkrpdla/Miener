@@ -99,7 +99,7 @@
             <if test="seqSite != null and seqSite != ''">
                 AND s.nSeqSite = #{seqSite}
             </if>
-            <if test="seqWorker != null">
+            <if test="seqWorker != null and seqWorker != ''">
                 AND mih.nSeqWorker = #{seqWorker}
             </if>
             <if test="metroProv != null and metroProv != ''">
@@ -116,9 +116,9 @@
         </where>
 
         ORDER BY mih.dtInstalled DESC
-        <if test="limit != null and offset != null">
-            LIMIT #{limit} OFFSET #{offset}
-        </if>
+<!--        <if test="limit != null and offset != null">-->
+<!--            LIMIT #{limit} OFFSET #{offset}-->
+<!--        </if>-->
     </select>
 
 
