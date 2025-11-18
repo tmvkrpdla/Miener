@@ -142,12 +142,32 @@ public class InstallService {
         }
     }
 
-    public List<Map<String, Object>> getMeterHistoryList(MeterInstallHistorySearchDto searchDto) {
+    // AS-IS:
+    // public List<Map<String, Object>> getMeterHistoryList(MeterInstallHistorySearchDto searchDto) {
+    //     return installDAO.getMeterInstallationHistory(searchDto);
+    // }
+
+    // TO-BE (DTO 사용):
+    public List<InstallHistoryResultDto> getMeterHistoryList(MeterInstallHistorySearchDto searchDto) {
         return installDAO.getMeterInstallationHistory(searchDto);
+    }
+
+    // AS-IS:
+    // public List<Map<String, Object>> getDcuHistoryList(DcuInstallHistorySearchDto searchDto) {
+    //     return installDAO.getDcuInstallationHistory(searchDto);
+    // }
+
+    // TO-BE (DTO 사용):
+    public List<InstallHistoryResultDto> getDcuHistoryList(DcuInstallHistorySearchDto searchDto) {
+        return installDAO.getDcuInstallationHistory(searchDto);
     }
 
     public int getMeterHistoryCount(MeterInstallHistorySearchDto searchDto) {
         return installDAO.countMeterInstallationHistory(searchDto);
+    }
+
+    public int getDcuHistoryCount(DcuInstallHistorySearchDto searchDto) {
+        return installDAO.countDcuInstallationHistory(searchDto);
     }
 }
 

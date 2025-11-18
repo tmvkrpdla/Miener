@@ -73,20 +73,21 @@
 
 
     <select id="getMeterInstallationHistory" parameterType="com.miener.dto.MeterInstallHistorySearchDto"
-            resultType="map">
+            resultType="com.miener.dto.InstallHistoryResultDto">
         SELECT
         s.name AS siteName,
-        ad.Name AS dongName,
-        ah.name AS hoName,
+        s.nSeqSite as seqSite,
         s.MetroProv,
         s.CityDist,
+        ad.Name AS dongName,
+        ah.name AS hoName,
+        ah.nSeqMeter as seqMeter,
+        ah.nSeqAptHo as seqHo,
+        ah.MidPrev,
         a.Name AS workerName,
         m.mid,
-        ah.MidPrev,
         mih.dtInstalled AS installDate,
-        mih.nSeqHo AS seqHo,
-        ah.nSeqMeter as seqMeter,
-        ah.nSeqAptHo as seqHo
+        mih.nSeqHo AS seqHo
         FROM meter_install_history mih
         LEFT JOIN aptho ah ON ah.nSeqAptHo = mih.nSeqHo
         LEFT JOIN aptdong ad ON ad.nSeqAptDong = ah.nSeqAptDong
@@ -110,9 +111,48 @@
         </where>
 
         ORDER BY mih.dtInstalled DESC
-        <if test="limit != null and offset != null">
-            LIMIT #{limit} OFFSET #{offset}
-        </if>
+        <!--        <if test="limit != null and offset != null">-->
+        <!--            LIMIT #{limit} OFFSET #{offset}-->
+        <!--        </if>-->
+    </select>
+
+    <select id="getDcuInstallationHistory" parameterType="com.miener.dto.DcuInstallHistorySearchDto"
+            resultType="com.miener.dto.InstallHistoryResultDto">
+        SELECT
+        s.Name as siteName,
+        s.nSeqSite as seqSite,
+        s.MetroProv,
+        s.CityDist,
+        d.DcuId,
+        d.nSeqDcu as seqDcu,
+        d.Location,
+        dih.dtInstalled AS installDate,
+        a.Name AS workerName
+        from
+        dcu_install_history dih
+        left join dcu d on d.nSeqDcu = dih.nSeqDcu
+        left join site s on s.nSeqSite = dih.nSeqSite
+        left join admin a on a.nSeqAdmin = dih.nSeqWorker
+
+        <where>
+            <if test="seqWorker != null">
+                AND dih.nSeqWorker = #{seqWorker}
+            </if>
+            <if test="metroProv != null and metroProv != ''">
+                AND s.MetroProv = #{metroProv}
+            </if>
+            <if test="installDateFrom != null and installDateFrom != ''">
+                AND dih.dtInstalled <![CDATA[ >= ]]> DATE(#{installDateFrom})
+            </if>
+            <if test="installDateTo != null and installDateTo != ''">
+                AND dih.dtInstalled <![CDATA[ <= ]]> DATE_ADD(DATE(#{installDateTo}), INTERVAL 1 DAY)
+            </if>
+        </where>
+
+        ORDER BY dih.dtInstalled DESC
+        <!--        <if test="limit != null and offset != null">-->
+        <!--            LIMIT #{limit} OFFSET #{offset}-->
+        <!--        </if>-->
     </select>
 
     <select id="countMeterInstallationHistory" parameterType="com.miener.dto.MeterInstallHistorySearchDto"
@@ -137,6 +177,31 @@
             </if>
             <if test="installDateTo != null and installDateTo != ''">
                 AND mih.dtInstalled <![CDATA[ <= ]]> DATE_ADD(DATE(#{installDateTo}), INTERVAL 1 DAY)
+            </if>
+        </where>
+    </select>
+
+    <select id="countDcuInstallationHistory" parameterType="com.miener.dto.DcuInstallHistorySearchDto"
+            resultType="int">
+        SELECT COUNT(*)
+        from
+        dcu_install_history dih
+        left join dcu d on d.nSeqDcu = dih.nSeqDcu
+        left join site s on s.nSeqSite = dih.nSeqSite
+        left join admin a on a.nSeqAdmin = dih.nSeqWorker
+
+        <where>
+            <if test="seqWorker != null">
+                AND dih.nSeqWorker = #{seqWorker}
+            </if>
+            <if test="metroProv != null and metroProv != ''">
+                AND s.MetroProv = #{metroProv}
+            </if>
+            <if test="installDateFrom != null and installDateFrom != ''">
+                AND dih.dtInstalled <![CDATA[ >= ]]> DATE(#{installDateFrom})
+            </if>
+            <if test="installDateTo != null and installDateTo != ''">
+                AND dih.dtInstalled <![CDATA[ <= ]]> DATE_ADD(DATE(#{installDateTo}), INTERVAL 1 DAY)
             </if>
         </where>
     </select>

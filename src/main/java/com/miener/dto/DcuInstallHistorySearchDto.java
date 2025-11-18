@@ -3,7 +3,7 @@ package com.miener.dto;
 import lombok.Data;
 
 @Data
-public class MeterInstallHistorySearchDto {
+public class DcuInstallHistorySearchDto {
 
     // 검색 조건
     private String seqSite;
@@ -13,6 +13,6 @@ public class MeterInstallHistorySearchDto {
     private String installDateTo;   // 설치 종료 날짜 (YYYY-MM-DD)
 
     // 페이징 (선택적)
-    private Integer limit;
-    private Integer offset;
+//    private Integer limit;
+//    private Integer offset;
 }

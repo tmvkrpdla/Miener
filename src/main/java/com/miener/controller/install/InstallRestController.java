@@ -201,7 +201,7 @@ public class InstallRestController {
             int totalCount = installService.getMeterHistoryCount(searchDto);
 
             // 2. 이력 목록 조회
-            List<Map<String, Object>> list = installService.getMeterHistoryList(searchDto);
+            List<InstallHistoryResultDto> list = installService.getMeterHistoryList(searchDto);
 
             response.put("success", true);
             response.put("list", list);
@@ -212,6 +212,30 @@ public class InstallRestController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "계량기 설치 이력 조회 중 서버 오류 발생: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    @GetMapping("/api/dcu/installList")
+    public ResponseEntity<Map<String, Object>> getDcuInstallationList(@ModelAttribute DcuInstallHistorySearchDto searchDto) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // 1. 전체 카운트 조회
+            int totalCount = installService.getDcuHistoryCount(searchDto);
+
+            // 2. 이력 목록 조회
+            List<InstallHistoryResultDto> list = installService.getDcuHistoryList(searchDto);
+
+            response.put("success", true);
+            response.put("list", list);
+            response.put("totalCount", totalCount);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "DCU 설치 이력 조회 중 서버 오류 발생: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
     }

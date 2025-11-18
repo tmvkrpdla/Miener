@@ -54,7 +54,9 @@ public interface InstallDAO {
      * @param searchDto 검색 조건 및 페이징 정보
      * @return 설치 이력 목록
      */
-    List<Map<String, Object>> getMeterInstallationHistory(MeterInstallHistorySearchDto searchDto);
+    List<InstallHistoryResultDto> getMeterInstallationHistory(MeterInstallHistorySearchDto searchDto);
+
+    List<InstallHistoryResultDto> getDcuInstallationHistory(DcuInstallHistorySearchDto searchDto);
 
     /**
      * 계량기 설치 이력의 전체 개수를 조회합니다.
@@ -63,5 +65,7 @@ public interface InstallDAO {
      * @return 전체 개수
      */
     int countMeterInstallationHistory(MeterInstallHistorySearchDto searchDto);
+
+    int countDcuInstallationHistory(DcuInstallHistorySearchDto searchDto);
 
 }
