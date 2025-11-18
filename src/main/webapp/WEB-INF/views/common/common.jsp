@@ -21,8 +21,18 @@
 <script src="${pageContext.request.contextPath}/static/js/common/enernet_api.js?${resourceVersion}"></script>
 
 
+<%--select2 라이브러리--%>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/i18n/ko.min.js"></script>
+<%--select2 라이브러리--%>
+
+
 <link href="${pageContext.request.contextPath}/static/css/common.css?${resourceVersion}" rel="stylesheet"/>
 <link href="${pageContext.request.contextPath}/static/css/bottomSheetSelect.css?${resourceVersion}" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/select2Custom.css?${resourceVersion}" rel="stylesheet"/>
+
+
 
 
 

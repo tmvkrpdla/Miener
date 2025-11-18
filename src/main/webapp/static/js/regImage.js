@@ -118,7 +118,6 @@ function getHwListBySite({
 function renderInstallationList(type, data) {
     const thead = document.querySelector('#installTable thead');
     const tbody = document.querySelector('#installTable tbody');
-    const resultCount = document.getElementById('resultCount');
     const $dcuCnt = $('#dcuCnt');
     const $meterCnt = $('#meterCnt');
     const $modemCnt = $('#modemCnt');
@@ -137,7 +136,7 @@ function renderInstallationList(type, data) {
     $meterCnt.text(installedMeterCount);
 
     // (boundToModem === true인 경우)
-    const modemBoundMeters = cachedHwData.meter.filter(meter => meter.bound_to_modem === 'true').length;
+    const modemBoundMeters = cachedHwData.meter.filter(meter => meter.bound_to_modem === true).length;
     $modemCnt.text(modemBoundMeters);
 
     // 헤더

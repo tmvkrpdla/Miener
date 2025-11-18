@@ -11,8 +11,7 @@
     <jsp:include page="../common/common.jsp"/>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-    <link href="${pageContext.request.contextPath}/static/css/meterInstallList.css?${resourceVersion}"
-          rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/static/css/meterInstallList.css?${resourceVersion}" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/static/css/modal.css?${resourceVersion}" rel="stylesheet"/>
 
 

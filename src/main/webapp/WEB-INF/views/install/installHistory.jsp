@@ -34,31 +34,75 @@
 </div>
 
 <div class="filter-box">
-    <div class="filter-title">검색 상세 필터</div>
-    <div class="filter-controls">
-        <select id="dateFilter" name="dateFilter">
-            <option value="today" selected>오늘</option>
-            <option value="yesterday">어제</option>
-            <option value="thisWeek">이번주</option>
-            <option value="thisMonth">이번달</option>
-        </select>
-
-        <select id="workerFilter">
-            <option value="all" selected>전체</option>
-            <option value="kim">김화경</option>
-            <option value="lee">이호성</option>
-        </select>
-
-        <select id="regionFilter" name="regionFilter">
-            <option value="all" selected>전체</option>
-            <option value="seoul">서울</option>
-            <option value="gyeonggi">경기</option>
-        </select>
-
+    <div class="filter-title-container"><span class="filter-title">검색 상세 필터</span>
         <span class="refresh-btn" title="초기화" onclick="resetFilters()">⟳</span>
     </div>
-    <input type="text" id="searchKeyword" name="searchKeyword" placeholder="단지 전체"/>
+    <div class="filter-controls">
 
+        <div class="filter-group">
+            <label for="dateFilter" class="filter-label">날짜</label>
+            <select id="dateFilter" name="dateFilter">
+                <option value="today" selected>오늘</option>
+                <option value="yesterday">어제</option>
+                <option value="thisWeek">이번주</option>
+                <option value="thisMonth">이번달</option>
+<%--                <option value="dateTarget">기간설정</option>--%>
+            </select>
+
+            <div id="dateTargetInputs" style="display: none; margin-top: 8px;">
+                <input type="date" id="startDate" class="date-input" placeholder="시작 날짜" required>
+                <span class="date-separator">~</span>
+                <input type="date" id="endDate" class="date-input" placeholder="종료 날짜" required>
+            </div>
+
+        </div>
+
+        <div class="filter-group">
+            <label for="workerFilter" class="filter-label">설치 작업자</label>
+            <select id="workerFilter">
+                <option value="all" selected>전체</option>
+                <option value="김화경">김화경</option>
+                <option value="이호성">이호성</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="workerFilter" class="filter-label">광역시·도</label>
+            <select id="regionFilter" name="regionFilter" class="filter-select">
+                <option value="all" selected>전체</option>
+                <option value="서울특별시">서울</option>
+                <option value="인천광역시">인천</option>
+                <option value="경기도">경기</option>
+                <option value="경상남도">경남</option>
+                <option value="부산광역시">부산</option>
+                <option value="충청남도">충남</option>
+                <option value="광주광역시">광주</option>
+                <option value="전라북도">전북</option>
+                <option value="대전광역시">대전</option>
+                <option value="강원도">강원</option>
+                <option value="울산광역시">울산</option>
+                <option value="경상북도">경북</option>
+                <option value="대구광역시">대구</option>
+                <option value="충청북도">충북</option>
+                <option value="전라남도">전남</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="siteSelect-container" id="siteSelectContainer">
+        <select id="siteSelect" class="select2" name="siteSelect" data-live-search="true"></select>
+    </div>
+    <%--    <input type="text" id="searchKeyword" name="searchKeyword" placeholder="단지 전체"/>--%>
+
+</div>
+
+
+<div id="loadingOverlay" style="display: none;">
+    <div class="spinner-container">
+        <div class="spinner"></div>
+        <p>데이터 로드중입니다...</p>
+    </div>
 </div>
 
 <div class="search-result-count">

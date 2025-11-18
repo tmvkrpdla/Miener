@@ -13,15 +13,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
     <link href="${pageContext.request.contextPath}/static/css/regImage.css?${resourceVersion}" rel="stylesheet"/>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-
-    <%--select2 라이브러리--%>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/i18n/ko.min.js"></script>
-    <%--select2 라이브러리--%>
-
 
 </head>
 <body>
@@ -47,17 +38,19 @@
 
     <div class="hardware-meter swiper">
         <div class="swiper-wrapper">
-            <div class="swiper-slide hardware-card" data-type="dcu">
-                <div class="card-title">DCU</div>
-                <div><span class="card-main" id="dcuCnt"></span> <span>개</span></div>
+
+            <div class="swiper-slide hardware-card dcu" data-type="dcu">
+                <div class="card-title dcu">DCU</div>
+                <div class="card-body dcu">
+                    <div><span class="card-main" id="dcuCnt"></span> <span class="card-ea">개</span></div>
+                </div>
             </div>
 
-            <div class="swiper-slide hardware-card" data-type="meter">
-                <div class="card-title">계량기 / 계측기</div>
-                <div><span id="meterCnt" class="card-main"></span><span>개 (모뎀 <span id="modemCnt"></span>)</span></div>
-                <div class="card-sub">
-                  <%--  세대부 908 (모뎀 454)<br>
-                    공용부 91 (모뎀 91)--%>
+            <div class="swiper-slide hardware-card meter" data-type="meter">
+                <div class="card-title meter">계량기 / 계측기</div>
+                <div class="card-body meter">
+                    <div><span id="meterCnt" class="card-main"></span><span class="card-ea">개 (모뎀 <span id="modemCnt"></span>)</span>
+                    </div>
                 </div>
             </div>
 
@@ -74,37 +67,37 @@
         <select id="selectHoForMeter"></select>
 
         <!-- 호 선택 입력 -->
-       <%-- <input id="selectHoForMeterInput"
-               type="text"
-               class="form-control"
-               placeholder="호 선택"
-               readonly
-               style="cursor:pointer;">
+        <%-- <input id="selectHoForMeterInput"
+                type="text"
+                class="form-control"
+                placeholder="호 선택"
+                readonly
+                style="cursor:pointer;">
 
-        <!-- Bootstrap Bottom Sheet -->
-        <div class="offcanvas offcanvas-bottom h-75" tabindex="-1" id="hoBottomSheet">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title">호 선택</h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
-            </div>
+         <!-- Bootstrap Bottom Sheet -->
+         <div class="offcanvas offcanvas-bottom h-75" tabindex="-1" id="hoBottomSheet">
+             <div class="offcanvas-header">
+                 <h5 class="offcanvas-title">호 선택</h5>
+                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+             </div>
 
-            <div class="offcanvas-body">
-                <!-- 검색창 -->
-                <input type="text" id="searchHoInput" class="form-control mb-3" placeholder="검색">
+             <div class="offcanvas-body">
+                 <!-- 검색창 -->
+                 <input type="text" id="searchHoInput" class="form-control mb-3" placeholder="검색">
 
-                <!-- 리스트 -->
-                <ul id="hoListContainer" class="list-group">
-                    <!-- JS로 항목 렌더링 -->
-                </ul>
-            </div>
-        </div>--%>
+                 <!-- 리스트 -->
+                 <ul id="hoListContainer" class="list-group">
+                     <!-- JS로 항목 렌더링 -->
+                 </ul>
+             </div>
+         </div>--%>
     </div>
 
     <div class="search-result-count">
-        검색 결과 : <span id="resultCount">0</span>
+        <%--        검색 결과 : <span id="resultCount">0</span>--%>
     </div>
 
-    <div id="installTable-container" style="max-height: 400px; overflow-y: auto;">
+    <div id="installTable-container">
         <table class="installation-table" id="installTable">
             <thead>
             <tr>
