@@ -14,9 +14,6 @@
     <link href="${pageContext.request.contextPath}/static/css/installation-mobile.css?${resourceVersion}"
           rel="stylesheet"/>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
@@ -46,14 +43,8 @@
                 <option value="yesterday">어제</option>
                 <option value="thisWeek">이번주</option>
                 <option value="thisMonth">이번달</option>
-<%--                <option value="dateTarget">기간설정</option>--%>
+                <option value="dateTarget">기간설정</option>
             </select>
-
-            <div id="dateTargetInputs" style="display: none; margin-top: 8px;">
-                <input type="date" id="startDate" class="date-input" placeholder="시작 날짜" required>
-                <span class="date-separator">~</span>
-                <input type="date" id="endDate" class="date-input" placeholder="종료 날짜" required>
-            </div>
 
         </div>
 
@@ -86,6 +77,15 @@
                 <option value="충청북도">충북</option>
                 <option value="전라남도">전남</option>
             </select>
+        </div>
+    </div>
+
+
+    <div id="dateTargetInputs" style="display: none;">
+        <div class="date-target-container">
+            <input type="date" id="startDate" class="date-input" placeholder="시작 날짜" required>
+            <span class="date-separator">~</span>
+            <input type="date" id="endDate" class="date-input" placeholder="종료 날짜" required>
         </div>
 
     </div>

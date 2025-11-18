@@ -353,3 +353,53 @@ input#searchKeyword {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+
+.date-target-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+
+
+/* 날짜 입력 필드의 기본 스타일 */
+.date-input {
+    /* 너비 조정 (필요에 따라) */
+    width: 140px;
+    height: 38px;
+    padding: 0 10px;
+
+    /* ✅ UI 이미지와 유사하게 둥근 모서리 적용 */
+    border-radius: 8px;
+
+    /* ✅ 기본 테두리 및 배경 설정 (파란색 테마) */
+    border: 1px solid #4A90E2; /* 파란색 테두리 */
+    background-color: #F8FBFF; /* 아주 밝은 파란색 배경 */
+    color: #333;
+    font-size: 14px;
+    text-align: center; /* 텍스트 중앙 정렬 */
+
+    /* 포커스 시 스타일 변경 */
+    transition: all 0.2s ease;
+}
+
+/* 포커스(클릭) 시 스타일 강조 */
+.date-input:focus {
+    outline: none; /* 기본 포커스 아웃라인 제거 */
+    border-color: #007bff; /* 더 진한 파란색 테두리 */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* 은은한 그림자 */
+}
+
+/* 날짜 구분자 (~) 스타일 */
+.date-separator {
+    font-size: 18px;
+    color: #555;
+    font-weight: bold;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    /*opacity: 0; !* 아이콘 숨기기 *!*/
+    cursor: pointer;
+}
