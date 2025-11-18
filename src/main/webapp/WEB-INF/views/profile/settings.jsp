@@ -236,24 +236,24 @@
         <div class="profile-pic">
             <img src="https://via.placeholder.com/150" alt="프로필 사진">
         </div>
-        <p class="profile-name">박연진 (pyj)</p>
-        <p class="profile-sub">슈퍼 관리자 · 더글로리</p>
+        <p class="profile-name">${displayName}</p>
+        <p class="profile-sub">${roleAndCompany}</p>
 
         <div class="profile-details">
             <div class="detail-item">
                 <small>소속 회사</small>
-                <p>더글로리</p>
+                <p>${companyName}</p>
             </div>
             <div class="detail-item">
                 <small>권한 레벨</small>
-                <p>슈퍼 관리자</p>
+                <p>${roleLevel}</p>
             </div>
             <div class="detail-item">
                 <small>연락처</small>
-                <p>010-1234-5678</p>
+                <p>${contactPhone}</p>
             </div>
         </div>
-        <p class="last-login">마지막 로그인: 2025-06-20 09:38</p>
+        <p class="last-login">마지막 로그인: ${formattedLastLogin}</p>
     </div>
 
     <!-- 관리자 기능 -->

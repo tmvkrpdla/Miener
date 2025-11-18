@@ -1,11 +1,6 @@
 // installation-mobile.js
-let combinedInstallationList = [];
-let currentSelectType = '';
 const API_URL = 'https://smartami.kr/api/v2';
-
-
 const $installationList = $('#installationList');
-
 
 /**
  * 로딩 오버레이를 표시합니다.
@@ -22,7 +17,50 @@ function hideLoading() {
 }
 
 
+/**
+ * 모든 검색 필터를 초기 상태로 리셋하고 백엔드에 새로운 요청을 보냅니다.
+ */
 function resetFilters() {
+    const $siteSelect = $('#siteSelect');
+
+    // 1. ✅ Select2 중복 호출 방지를 위해 이벤트 리스너 잠시 해제
+    // (이전에 $('#siteSelect').on('change', loadAndApplyFilters)로 연결했기 때문)
+    $siteSelect.off('change');
+
+    // 2. 필터 값 초기화 (이벤트 발생하지 않도록 .val()만 사용)
+
+    // 날짜 필터 초기화: '오늘' (today)로 설정
+    $('#dateFilter').val('today');
+
+    // 작업자 필터 초기화: '전체' (all)로 설정
+    $('#workerFilter').val('all');
+
+    // 지역 필터 초기화: '전체' (all)로 설정
+    $('#regionFilter').val('all');
+
+    // ✅ Select2 초기화: .val(null) 후 trigger('change') 사용
+    // (change 이벤트가 발생하지만, 위에서 off() 했기 때문에 안전함)
+    $siteSelect.val(null).trigger('change');
+
+    // 검색 키워드 입력 필드 초기화 (만약 있다면)
+    $('#searchKeyword').val('');
+
+
+    // 3. ✅ UI 상태 초기화: '기간설정' 입력 필드 숨기기
+    $('#dateTargetInputs').hide();
+    $('#startDate').val('');
+    $('#endDate').val('');
+
+
+    // 4. ✅ Select2 이벤트 리스너 다시 연결
+    $siteSelect.on('change', loadAndApplyFilters);
+
+
+    // 5. ✅ 필터가 초기화된 상태로 통합 로드 함수 호출
+    loadAndApplyFilters();
+}
+
+/*function resetFilters() {
     // 날짜 필터 초기화: '오늘' (today)로 설정
     $('#dateFilter').val('today');
 
@@ -44,7 +82,7 @@ function resetFilters() {
     // 4. ✅ 필터가 초기화된 상태로 리스트를 다시 필터링 및 렌더링
     // (applySearchFiltersAndRender 함수 내부에서 현재 탭 상태와 초기화된 필터 값을 읽어 필터링을 수행합니다.)
     applySearchFiltersAndRender();
-}
+}*/
 
 
 /**
@@ -52,7 +90,7 @@ function resetFilters() {
  * @param {Array<Object>} siteList - 단지 목록 데이터
  */
 function renderSiteList(siteList) {
-    const $siteSelect = $('#siteSelect').empty().append('<option value="" disabled selected>선택하세요</option>');
+    const $siteSelect = $('#siteSelect').empty().append('<option value="" selected>단지 전체</option>');
 
     // 1. 단지 옵션 렌더링
     siteList.forEach(site => {
@@ -65,8 +103,6 @@ function renderSiteList(siteList) {
         language: "ko",
         // 검색 결과를 드롭다운 안에 렌더링 (모바일 화면 전체를 덮지 않도록)
         dropdownAutoWidth: true,
-        // 선택하지 않은 상태에서 보일 텍스트
-        placeholder: "단지 검색",
         // 검색창에 커서 자동 포커스
         minimumResultsForSearch: 1, // 항상 검색창 표시
         width: '100%' // 부모 요소 너비에 맞춤
@@ -88,24 +124,6 @@ function getSiteList(type) {
     });
 }
 
-function closeBottomSheet() {
-    document.getElementById('bottomSheet').classList.remove('show');
-}
-
-document.querySelectorAll('.sheet-option').forEach(option => {
-    option.addEventListener('click', function () {
-        const value = this.getAttribute('data-value');
-        const text = this.textContent;
-
-        // 변경할 대상
-        if (currentSelectType === 'worker') {
-            document.getElementById('workerSelectedText').textContent = text;
-            document.getElementById('workerFilter').value = value;
-        }
-
-        closeBottomSheet();
-    });
-});
 
 function renderInstallationList(list) {
     // const $listContainer = $("#installationList");
@@ -226,98 +244,6 @@ function fetchInstallationData(url, params, type) {
     });
 }
 
-// =========================================================================
-
-function loadInstallationList() {
-
-
-    // 1. ✅ 로딩 모달 표시
-    showLoading();
-
-    const searchParams = {
-        // 예시: DOM에서 작업자 ID와 광역시를 가져옴
-        // seqSite:
-        // seqWorker: $('#workerSelect').val() || null,
-        // metroProv: $('#metroSelect').val() || null,
-        // installDateFrom: $('#startDate').val() || null,
-        // installDateTo: $('#endDate').val() || null,
-    };
-
-    const meterApiUrl = '../install/api/meter/installList';
-    const dcuApiUrl = '../install/api/dcu/installList';
-
-    // 1. Meter 및 DCU API 호출 Promise 생성
-    const meterPromise = fetchInstallationData(meterApiUrl, searchParams, 'meter');
-    const dcuPromise = fetchInstallationData(dcuApiUrl, searchParams, 'dcu');
-
-    // 2. Promise.all을 사용하여 두 호출의 완료를 기다림
-    Promise.all([meterPromise, dcuPromise])
-        .then(results => {
-            const [meterList, dcuList] = results;
-
-            // 3. 두 리스트를 하나의 배열로 병합
-            const combinedList = [...meterList, ...dcuList];
-
-            // 4. 설치 일시(installDate)를 기준으로 정렬
-            combinedList.sort((a, b) => {
-                const dateA = new Date(a.installDate).getTime();
-                const dateB = new Date(b.installDate).getTime();
-                return dateB - dateA; // 내림차순 정렬 (최신순)
-            });
-
-            combinedInstallationList = combinedList;
-
-            const initialTab = new URLSearchParams(window.location.search).get('tab') || 'all';
-
-            // 탭 UI 활성화 (선택적)
-            $('.tab-item').removeClass('active');
-            $(`.tab-item[onclick="changeTab('${initialTab}')"]`).addClass('active');
-
-            // renderFilteredList(initialTab);
-
-            // 5. ✅ 통합 필터링 함수 호출 (디폴트 필터 상태 적용)
-            // applySearchFiltersAndRender()가 DOM에서 'today', 'all', 'all'을 읽어 필터링합니다.
-            applySearchFiltersAndRender();
-        })
-        .catch(error => {
-            // Promise 중 하나라도 reject(API 호출 자체 실패)되면 이쪽으로 옴
-            alert('설치 리스트 조회 중 오류가 발생했습니다. 자세한 내용은 콘솔을 확인하십시오.');
-            console.error('Combined Load Error:', error);
-        })
-        .finally(() => {
-            // 4. ✅ 로딩 모달 숨기기 (성공/실패 여부에 관계없이 항상 실행)
-            hideLoading();
-        });
-}
-
-
-/**
- * 전역 리스트를 필터링하고 화면을 렌더링하는 핵심 함수
- * @param {string} tabType - 'all', 'meter', 또는 'dcu'
- */
-function renderFilteredList(tabType) {
-    let filteredList = [];
-
-    if (tabType === 'all') {
-        filteredList = combinedInstallationList;
-    } else {
-        // 'meter' 또는 'dcu' 타입으로 필터링
-        filteredList = combinedInstallationList.filter(item => item.hwType === tabType);
-    }
-
-    // 4. 화면 초기화 (전역 변수 사용)
-    $installationList.empty(); // ✅ $installationList 사용
-
-    // 5. 필터링된 리스트 렌더링 실행
-    if (filteredList.length > 0) {
-        // 리스트가 있을 경우, HTML을 생성하여 $installationList에 추가
-        renderInstallationList(filteredList);
-    } else {
-        // 결과가 없을 때 표시할 내용
-        $installationList.append('<div class="no-data">조회된 설치 이력이 없습니다.</div>');
-    }
-}
-
 
 /**
  * 탭 클릭 이벤트 핸들러
@@ -335,123 +261,11 @@ function changeTab(tabType) {
 
     // 3. 필터링 및 렌더링 실행
     // renderFilteredList(tabType);
-    applySearchFiltersAndRender();
+    // applySearchFiltersAndRender();
+    loadAndApplyFilters();
 }
 
 // =========================================================================
-
-
-/**
- * 모든 검색 필터 (날짜, 작업자, 지역)를 적용하여 리스트를 필터링하고 렌더링합니다.
- */
-function applySearchFiltersAndRender() {
-    const dateValue = $('#dateFilter').val();
-    const workerValue = $('#workerFilter').val();
-    const regionValue = $('#regionFilter').val();
-    const siteValue = $('#siteSelect').val();
-
-
-    const startDateValue = $('#startDate').val();
-    const endDateValue = $('#endDate').val();
-
-    // 1. 현재 활성화된 HW 탭 타입 (dcu, meter, all)을 가져옵니다.
-    // changeTab 함수에서 URL 파라미터나 탭 클래스를 통해 현재 탭을 가져온다고 가정
-    const currentTab = new URLSearchParams(window.location.search).get('tab') || 'all';
-
-    // 2. HW 타입 필터링 (탭 클릭 결과)
-    let tempFilteredList = combinedInstallationList;
-    if (currentTab !== 'all') {
-        tempFilteredList = combinedInstallationList.filter(item => item.hwType === currentTab);
-    }
-
-    // 3. 검색 필터 (날짜, 작업자, 지역) 적용
-    const finalFilteredList = tempFilteredList.filter(item => {
-        let isMatch = true;
-
-        // **A. 작업자 필터 (workerFilter)**
-        // <option value="all">이 아닐 경우, workerName과 일치하는지 확인
-        if (workerValue !== 'all' && item.workerName !== workerValue) {
-            isMatch = false;
-        }
-
-        // **B. 지역 필터 (regionFilter)**
-        // <option value="all">이 아닐 경우, MetroProv와 일치하는지 확인
-        if (isMatch && regionValue !== 'all' && item.metroProv !== regionValue) {
-            isMatch = false;
-        }
-
-        // **C. 날짜 필터 (dateFilter)**
-        if (isMatch) {
-            const installTime = item.installDate;
-            let range;
-
-            if (dateValue === 'dateTarget') {
-                // 1. '기간설정' 선택 시: 입력된 시작/종료 날짜를 사용
-                if (startDateValue && endDateValue) {
-                    // 입력된 날짜 문자열을 타임스탬프로 변환
-                    const start = DateUtil.getStartOfDay(new Date(startDateValue));
-                    // 종료 날짜는 해당 날짜의 자정(다음 날 00:00:00) 직전까지 포함
-                    const end = DateUtil.getStartOfDay(new Date(endDateValue)) + 86400000 - 1;
-                    range = {start: start, end: end};
-                } else {
-                    // '기간설정'이 선택되었으나 날짜 입력이 완료되지 않은 경우
-                    // 일단 필터링을 건너뛰거나, 기간이 유효하지 않으면 false 반환 가능
-                    // 여기서는 유효하지 않은 기간은 필터링하지 않음 (isMatch = true 유지)
-                }
-            } else {
-                switch (dateValue) {
-                    case 'today':
-                        range = DateUtil.getTodayRange();
-                        break;
-                    case 'yesterday':
-                        range = DateUtil.getYesterdayRange();
-                        break;
-                    case 'thisWeek':
-                        range = DateUtil.getThisWeekRange();
-                        break;
-                    case 'thisMonth':
-                        range = DateUtil.getThisMonthRange();
-                        break;
-                    default:
-                        // 'today' 외의 다른 날짜 옵션이 추가될 경우 대비
-                        range = null;
-                }
-            }
-            // installDate (타임스탬프)가 계산된 범위 내에 있는지 확인
-            if (range) {
-                if (installTime < range.start || installTime > range.end) {
-                    isMatch = false;
-                }
-            }
-        }
-
-        // D. ✅ 단지 필터 (siteSelect)
-        // Select2는 기본적으로 값(value)을 반환하며, 이는 DB의 site ID/seqSite라고 가정합니다.
-        // item 객체에 해당 site ID/seqSite 값이 있다고 가정하고 필터링합니다.
-        if (isMatch && siteValue && siteValue !== item.seqSite) { // nSeqSite는 item 객체의 단지 ID 필드명이라고 가정
-            isMatch = false;
-        }
-
-        return isMatch;
-    });
-
-    // ===================================================
-// ✅ 4. DOM 초기화 (이전 데이터를 제거)
-// ===================================================
-    const $listContainer = $('#installationList');
-    $listContainer.empty();
-
-    console.log("finalFilteredList : ", finalFilteredList);
-
-// 5. 리스트 렌더링 실행
-    if (finalFilteredList.length > 0) {
-        // 리스트가 있을 경우, HTML을 생성하여 $listContainer에 추가
-        renderInstallationList(finalFilteredList);
-    } else {
-        // 리스트가 없을 경우, "데이터 없음" 메시지를 빈 컨테이너에 추가
-        $listContainer.append('<div class="no-data">조회된 설치 이력이 없습니다.</div>');
-    }
-}
 
 
 /**
@@ -507,41 +321,226 @@ const DateUtil = {
     }
 };
 
+
+/**
+ * 현재 설정된 모든 필터 상태를 백엔드 API에 전달하여 데이터를 로드하고 렌더링합니다.
+ */
+function loadAndApplyFilters() {
+    // 1. ✅ 로딩 모달 표시
+    showLoading();
+
+    // 2. 현재 필터 상태를 수집 (API 쿼리 파라미터로 사용)
+    const dateValue = $('#dateFilter').val();
+    const startDateValue = $('#startDate').val();
+    const endDateValue = $('#endDate').val();
+    const initialTab = new URLSearchParams(window.location.search).get('tab') || 'all';
+
+    // 3. API 요청 파라미터 구성
+    const searchParams = {
+        seqWorker: $('#workerFilter').val() !== 'all' ? $('#workerFilter').val() : null,
+        metroProv: $('#regionFilter').val() !== 'all' ? $('#regionFilter').val() : null,
+        seqSite: $('#siteSelect').val() || null,
+
+        // ✅ 날짜 필터 처리 로직: 백엔드가 이해할 수 있는 형식으로 날짜를 변환
+        // 'today', 'yesterday', 'thisWeek', 'thisMonth', 'dateTarget' 처리
+        ...getDateRangeParams(dateValue, startDateValue, endDateValue)
+        // 백엔드에서 pagination 처리가 필요하다면 page, size 등의 파라미터 추가
+    };
+
+    // 4. API URL 결정 (탭에 따라 달라짐)
+    let apiEndpoint;
+    if (initialTab === 'meter') {
+        apiEndpoint = '../install/api/meter/installList';
+    } else if (initialTab === 'dcu') {
+        apiEndpoint = '../install/api/dcu/installList';
+    } else {
+        // 'all' 탭일 경우, Meter와 DCU 데이터를 병합해야 함 (다음 단계에서 처리)
+        // 일단은 Meter와 DCU를 모두 호출하는 기존의 Promise.all 패턴을 사용합니다.
+    }
+
+    // 5. API 호출 및 처리 (탭이 'all'인 경우와 분리)
+    if (initialTab === 'meter' || initialTab === 'dcu') {
+        // 단일 API 호출 (Meter 또는 DCU 탭)
+        fetchInstallationData(apiEndpoint, searchParams, initialTab)
+            .then(resultList => {
+                // 백엔드에서 정렬된 리스트를 받았다고 가정
+                handleLoadSuccess([resultList]);
+            })
+            .catch(error => handleLoadError(error))
+            .finally(() => hideLoading());
+
+    } else {
+        // 'all' 탭일 경우: 두 API를 동시에 호출하여 결과를 병합
+        const meterPromise = fetchInstallationData('../install/api/meter/installList', searchParams, 'meter');
+        const dcuPromise = fetchInstallationData('../install/api/dcu/installList', searchParams, 'dcu');
+
+        Promise.all([meterPromise, dcuPromise])
+            .then(results => handleLoadSuccess(results))
+            .catch(error => handleLoadError(error))
+            .finally(() => hideLoading());
+    }
+}
+
+
+/**
+ * API 호출 성공 시 데이터 병합 및 렌더링을 처리하는 헬퍼 함수
+ */
+function handleLoadSuccess(results) {
+    // 1. 두 리스트를 하나의 배열로 병합 (results는 [meterList, dcuList] 형태)
+    const combinedList = [].concat(...results);
+
+    // 2. ✅ (선택 사항) 클라이언트에서 최종 정렬 (백엔드에서 정렬하는 것을 권장)
+    combinedList.sort((a, b) => {
+        const dateA = new Date(a.installDate).getTime();
+        const dateB = new Date(b.installDate).getTime();
+        return dateB - dateA; // 내림차순 정렬 (최신순)
+    });
+
+    // 3. 렌더링 실행
+    const $listContainer = $('#installationList');
+    $listContainer.empty();
+
+    if (combinedList.length > 0) {
+        renderInstallationList(combinedList);
+    } else {
+        $listContainer.append('<div class="no-data">조회된 설치 이력이 없습니다.</div>');
+    }
+}
+
+/**
+ * API 호출 실패 시 에러를 처리하는 헬퍼 함수
+ */
+function handleLoadError(error) {
+    alert('설치 리스트 조회 중 오류가 발생했습니다. 자세한 내용은 콘솔을 확인하십시오.');
+    console.error('Combined Load Error:', error);
+}
+
+
+/**
+ * 날짜 필터 값에 따라 백엔드 API에 전달할 시작일/종료일 파라미터를 생성합니다.
+ * @param {string} dateValue - 'today', 'thisWeek', 'dateTarget' 등
+ * @param {string} startDateValue - 기간설정 시 시작 날짜 ('YYYY-MM-DD')
+ * @param {string} endDateValue - 기간설정 시 종료 날짜 ('YYYY-MM-DD')
+ * @returns {Object} { installDateFrom: string, installDateTo: string }
+ */
+function getDateRangeParams(dateValue, startDateValue, endDateValue) {
+    let range = null;
+
+    switch (dateValue) {
+        case 'today':
+            range = DateUtil.getTodayRange();
+            break;
+        case 'yesterday':
+            range = DateUtil.getYesterdayRange();
+            break;
+        case 'thisWeek':
+            range = DateUtil.getThisWeekRange();
+            break;
+        case 'thisMonth':
+            range = DateUtil.getThisMonthRange();
+            break;
+        case 'dateTarget':
+            if (startDateValue && endDateValue) {
+                const start = DateUtil.getStartOfDay(new Date(startDateValue));
+                // 종료 날짜는 해당 날짜의 자정(다음 날 00:00:00) 직전까지 포함
+                const end = DateUtil.getStartOfDay(new Date(endDateValue)) + 86400000 - 1;
+                range = {start: start, end: end};
+            }
+            break;
+    }
+
+    if (range) {
+        // UTC 변환 없이 KST 기준 로컬 포맷으로 변환
+        const formatLocalDateTime = (ts) => {
+            const d = new Date(ts);
+            return [
+                    d.getFullYear(),
+                    String(d.getMonth() + 1).padStart(2, '0'),
+                    String(d.getDate()).padStart(2, '0')
+                ].join('-')
+                + 'T' +
+                [
+                    String(d.getHours()).padStart(2, '0'),
+                    String(d.getMinutes()).padStart(2, '0'),
+                    String(d.getSeconds()).padStart(2, '0')
+                ].join(':');
+        };
+
+        return {
+            installDateFrom: formatLocalDateTime(range.start),
+            installDateTo: formatLocalDateTime(range.end)
+        };
+    }
+
+    return {}; // 날짜 필터가 없거나 유효하지 않은 경우 빈 객체 반환
+}
+
+
 $(document).ready(function () {
 
     // 페이지 진입 시 데이터 로드
-    loadInstallationList();
+    // loadInstallationList();
+    loadAndApplyFilters();
+
+
+    // ✅ 모든 필터 <select>에 change 이벤트 리스너 연결
+    /* $('#workerFilter, #regionFilter, #siteSelect').on('change', function () {
+         applySearchFiltersAndRender();
+     });*/
+    $('#workerFilter, #regionFilter, #siteSelect').on('change', function () {
+        loadAndApplyFilters();
+    });
+
+
+    /*    $('#dateFilter').on('change', function () {
+            const selectedValue = $(this).val();
+
+            if (selectedValue === 'dateTarget') {
+                $('#dateTargetInputs').show();
+            } else {
+                $('#dateTargetInputs').hide();
+                $('#startDate').val('');
+                $('#endDate').val('');
+            }
+
+            // UI 변경 후, 필터링 대신 데이터를 다시 로드
+            loadAndApplyFilters();
+        });*/
+
+
+    $('#dateFilter').on('change', function () {
+        const selectedValue = $(this).val();
+
+        if (selectedValue === 'dateTarget') {
+            $('#dateTargetInputs').show();
+
+            // ✅ 기본값 설정 로직 추가
+            const today = new Date();
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(today.getMonth() - 1); // 오늘 날짜로부터 한 달 전
+
+            // 입력 필드에 기본값 설정
+            $('#startDate').val(getDateString(oneMonthAgo));
+            $('#endDate').val(getDateString(today));
+
+        } else {
+            $('#dateTargetInputs').hide();
+            $('#startDate').val('');
+            $('#endDate').val('');
+        }
+
+        // UI 변경 및 기본값 설정 후, 데이터를 다시 로드
+        loadAndApplyFilters();
+    });
+
+    // // 3. ✅ 시작/종료 날짜 입력 필드 리스너 추가
+    // $('#startDate, #endDate').on('change', applySearchFiltersAndRender);
+    $('#startDate, #endDate').on('change', loadAndApplyFilters);
 
 
     $('#historyBack').on('click', function () {
         window.location.href = '../profile/settings';
     })
-
-    // ✅ 모든 필터 <select>에 change 이벤트 리스너 연결
-    $('#workerFilter, #regionFilter, #siteSelect').on('change', function () {
-        applySearchFiltersAndRender();
-    });
-
-
-    $('#dateFilter').on('change', function() {
-        const selectedValue = $(this).val();
-
-        if (selectedValue === 'dateTarget') {
-            $('#dateTargetInputs').show();
-        } else {
-            $('#dateTargetInputs').hide();
-            // 기간 설정 외의 옵션을 선택하면 날짜 입력 값 초기화
-            $('#startDate').val('');
-            $('#endDate').val('');
-        }
-
-        // UI 변경 후, 필터링을 여기서 단독으로 실행
-        // applySearchFiltersAndRender();
-    });
-
-    // 3. ✅ 시작/종료 날짜 입력 필드 리스너 추가
-    $('#startDate, #endDate').on('change', applySearchFiltersAndRender);
-
 
     // 초기 단지 리스트
     getSiteList('apt');

@@ -96,25 +96,31 @@
         LEFT JOIN meter m ON ah.nSeqMeter = m.nSeqMeter
 
         <where>
+            <if test="seqSite != null and seqSite != ''">
+                AND s.nSeqSite = #{seqSite}
+            </if>
             <if test="seqWorker != null">
                 AND mih.nSeqWorker = #{seqWorker}
             </if>
             <if test="metroProv != null and metroProv != ''">
                 AND s.MetroProv = #{metroProv}
             </if>
-            <if test="installDateFrom != null and installDateFrom != ''">
-                AND mih.dtInstalled <![CDATA[ >= ]]> DATE(#{installDateFrom})
+
+            <if test="installDateFrom != null">
+                AND mih.dtInstalled <![CDATA[ >= ]]> #{installDateFrom}
             </if>
-            <if test="installDateTo != null and installDateTo != ''">
-                AND mih.dtInstalled <![CDATA[ <= ]]> DATE_ADD(DATE(#{installDateTo}), INTERVAL 1 DAY)
+
+            <if test="installDateTo != null">
+                AND mih.dtInstalled <![CDATA[ <= ]]> #{installDateTo}
             </if>
         </where>
 
         ORDER BY mih.dtInstalled DESC
-        <!--        <if test="limit != null and offset != null">-->
-        <!--            LIMIT #{limit} OFFSET #{offset}-->
-        <!--        </if>-->
+        <if test="limit != null and offset != null">
+            LIMIT #{limit} OFFSET #{offset}
+        </if>
     </select>
+
 
     <select id="getDcuInstallationHistory" parameterType="com.miener.dto.DcuInstallHistorySearchDto"
             resultType="com.miener.dto.InstallHistoryResultDto">
@@ -135,25 +141,31 @@
         left join admin a on a.nSeqAdmin = dih.nSeqWorker
 
         <where>
-            <if test="seqWorker != null">
+            <if test="seqSite != null and seqSite != ''">
+                AND dih.nSeqSite = #{seqSite}
+            </if>
+            <if test="seqWorker != null and seqWorker != ''">
                 AND dih.nSeqWorker = #{seqWorker}
             </if>
             <if test="metroProv != null and metroProv != ''">
                 AND s.MetroProv = #{metroProv}
             </if>
-            <if test="installDateFrom != null and installDateFrom != ''">
-                AND dih.dtInstalled <![CDATA[ >= ]]> DATE(#{installDateFrom})
+
+            <if test="installDateFrom != null">
+                AND dih.dtInstalled <![CDATA[ >= ]]> #{installDateFrom}
             </if>
-            <if test="installDateTo != null and installDateTo != ''">
-                AND dih.dtInstalled <![CDATA[ <= ]]> DATE_ADD(DATE(#{installDateTo}), INTERVAL 1 DAY)
+
+            <if test="installDateTo != null">
+                AND dih.dtInstalled <![CDATA[ <= ]]> #{installDateTo}
             </if>
         </where>
 
         ORDER BY dih.dtInstalled DESC
-        <!--        <if test="limit != null and offset != null">-->
-        <!--            LIMIT #{limit} OFFSET #{offset}-->
-        <!--        </if>-->
+        <if test="limit != null and offset != null">
+            LIMIT #{limit} OFFSET #{offset}
+        </if>
     </select>
+
 
     <select id="countMeterInstallationHistory" parameterType="com.miener.dto.MeterInstallHistorySearchDto"
             resultType="int">
@@ -166,20 +178,26 @@
         LEFT JOIN meter m ON ah.nSeqMeter = m.nSeqMeter
 
         <where>
+            <if test="seqSite != null and seqSite != ''">
+                AND s.nSeqSite = #{seqSite}
+            </if>
             <if test="seqWorker != null">
                 AND mih.nSeqWorker = #{seqWorker}
             </if>
             <if test="metroProv != null and metroProv != ''">
                 AND s.MetroProv = #{metroProv}
             </if>
-            <if test="installDateFrom != null and installDateFrom != ''">
-                AND mih.dtInstalled <![CDATA[ >= ]]> DATE(#{installDateFrom})
+
+            <if test="installDateFrom != null">
+                AND mih.dtInstalled <![CDATA[ >= ]]> #{installDateFrom}
             </if>
-            <if test="installDateTo != null and installDateTo != ''">
-                AND mih.dtInstalled <![CDATA[ <= ]]> DATE_ADD(DATE(#{installDateTo}), INTERVAL 1 DAY)
+
+            <if test="installDateTo != null">
+                AND mih.dtInstalled <![CDATA[ <= ]]> #{installDateTo}
             </if>
         </where>
     </select>
+
 
     <select id="countDcuInstallationHistory" parameterType="com.miener.dto.DcuInstallHistorySearchDto"
             resultType="int">
@@ -191,17 +209,22 @@
         left join admin a on a.nSeqAdmin = dih.nSeqWorker
 
         <where>
+            <if test="seqSite != null and seqSite != ''">
+                AND dih.nSeqSite = #{seqSite}
+            </if>
             <if test="seqWorker != null">
                 AND dih.nSeqWorker = #{seqWorker}
             </if>
             <if test="metroProv != null and metroProv != ''">
                 AND s.MetroProv = #{metroProv}
             </if>
-            <if test="installDateFrom != null and installDateFrom != ''">
-                AND dih.dtInstalled <![CDATA[ >= ]]> DATE(#{installDateFrom})
+
+            <if test="installDateFrom != null">
+                AND dih.dtInstalled <![CDATA[ >= ]]> #{installDateFrom}
             </if>
-            <if test="installDateTo != null and installDateTo != ''">
-                AND dih.dtInstalled <![CDATA[ <= ]]> DATE_ADD(DATE(#{installDateTo}), INTERVAL 1 DAY)
+
+            <if test="installDateTo != null">
+                AND dih.dtInstalled <![CDATA[ <= ]]> #{installDateTo}
             </if>
         </where>
     </select>
