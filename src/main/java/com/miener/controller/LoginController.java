@@ -28,6 +28,10 @@ public class LoginController {
 
         if (admin != null) {
             // 2. ✅ 로그인 성공: 세션에 사용자 정보 저장
+
+            // 🚨 세션 유지 기간을 9시간 (32,400초)로 설정 🚨 session.setMaxInactiveInterval(9 * 60 * 60); // 시 분 초
+            session.setMaxInactiveInterval(32400);
+
             session.setAttribute("nSeqAdmin", admin.getNSeqAdmin());
             session.setAttribute("userName", admin.getName());
             session.setAttribute("userId", admin.getId());       // ✅ 아이디
@@ -45,8 +49,6 @@ public class LoginController {
             return "redirect:/";
         }
     }
-
-
 
 
     @RequestMapping("/logout")
