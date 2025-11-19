@@ -121,11 +121,11 @@ body {
 .filter-controls select,
 .custom-select {
     flex: 1;
-    padding: 12px 10px;
+    padding: 8px 10px;
     border-radius: 6px;
-    border: 1px solid #ddd;
-    background: #f8faff;
-    color: #0b9dfd;
+    border: none;
+    background: #00A8FF;
+    color: #FFFFFF;
     font-weight: 600;
     cursor: pointer;
 }
@@ -187,8 +187,15 @@ input#searchKeyword {
     justify-content: space-between;
     font-size: 12px;
     color: #666;
-    margin-bottom: 5px;
+    /*margin-bottom: 5px;*/
     flex-wrap: wrap;
+}
+
+
+.bottom-value {
+    color: #474747;
+    font-size: 10.5pt;
+    font-weight: 400;
 }
 
 .main-row {
@@ -201,13 +208,24 @@ input#searchKeyword {
 }
 
 .main-row .name {
-    color: #222;
+    color: #000000;
+    font-size: 15.0pt;
+    font-weight: 600;
 }
 
 .main-row .serial {
-    color: #0b9dfd;
+    /*color: #0b9dfd;*/
     font-weight: 700;
-    font-size: 15px;
+    font-size: 15.0pt;
+    font-weight: 600;
+}
+
+.main-row .serial-dcu {
+    color: #0D6EFD;
+}
+
+.main-row .serial-meter {
+    color: #00A8FF;
 }
 
 .bottom-row {
@@ -217,19 +235,25 @@ input#searchKeyword {
 }
 
 .badge-meter {
-    background: #0b9dfd;
-    color: #fff;
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 12px;
+    background: #00A8FF;
+    padding: 2px 7px;
+    border-radius: 7px;
+    width: 60px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 10.5pt;
+    font-weight: 400;
 }
 
 .badge-dcu {
-    background: #7f4fff;
-    color: #fff;
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 12px;
+    background: #0D6EFD;
+    padding: 2px 7px;
+    border-radius: 7px;
+    width: 60px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 10.5pt;
+    font-weight: 400;
 }
 
 /* ✅ 바텀 시트 */
@@ -245,21 +269,26 @@ input#searchKeyword {
     transition: bottom 0.3s ease;
     z-index: 1000;
 }
+
 .bottom-sheet.show {
     bottom: 0;
 }
+
 .sheet-content {
     padding: 20px;
 }
+
 .sheet-option {
     padding: 12px;
     border-bottom: 1px solid #eee;
     font-size: 15px;
     cursor: pointer;
 }
+
 .sheet-option:hover {
     background-color: #f8f8f8;
 }
+
 .sheet-close {
     text-align: center;
     padding: 14px;
@@ -317,7 +346,6 @@ input#searchKeyword {
 }
 
 
-
 /* ✅ CSS: 로딩 오버레이 스타일 */
 #loadingOverlay {
     position: fixed;
@@ -350,8 +378,12 @@ input#searchKeyword {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 

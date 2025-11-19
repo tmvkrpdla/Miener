@@ -213,10 +213,10 @@ function renderInstallationList(list) {
                     </div>
                     <div class="main-row">
                         <span class="name">${item.siteName}</span>
-                        <span class="serial">${serialValue}</span>
+                        <span class="serial serial-${item.hwType}">${serialValue}</span>
                     </div>
                     <div class="bottom-row">
-                        <div>${bottomRowValue}</div>
+                        <div class="bottom-value">${bottomRowValue}</div>
                     </div>
                 </div>
             `;
