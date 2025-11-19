@@ -9,7 +9,7 @@ body, html {
 .login-container {
     max-width: 400px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 0 20px 40px 20px;
     text-align: center;
 }
 
@@ -51,22 +51,11 @@ input[type="password"] {
     text-decoration: underline;
 }
 
-/* 캐릭터 & 배경 */
-.login-container::before {
-    content: "";
-    display: block;
-    background: linear-gradient(to bottom, #00aaff 200px, white 200px);
-    height: 200px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: -1;
-}
 
 .login-container img.logo {
     width: 100%;
     margin-bottom: 10px;
+    background-size: cover;
 }
 
 .login-container .subtitle {
@@ -76,7 +65,7 @@ input[type="password"] {
 }
 
 .character-row {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 
@@ -97,3 +86,34 @@ input[type="password"] {
     background-color: #9b9b9b;
 }
 
+#loginBtn.active {
+    background-color: #00A8FF; /* 배경색: 00A8FF */
+    color: #FFFFFF; /* 텍스트색: FFFFFF */
+    cursor: pointer; /* 활성화 상태에서는 클릭 가능 커서 */
+}
+
+.login-links {
+    display: flex; /* Flexbox 활성화 */
+    justify-content: center; /* 전체 아이템들을 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 (구분자 | 와 텍스트 높이 맞춤) */
+    margin-top: 16px;
+    /* 너비가 정해지지 않았다면, 부모 요소의 너비를 채웁니다. */
+    width: 100%;
+}
+
+.login-links a {
+    /* Flex-grow를 1로 설정하여 사용 가능한 공간을 균등하게 분배합니다. */
+    flex-grow: 1;
+
+    /* 텍스트를 각 A 태그 내부에서 중앙 정렬합니다. */
+    text-align: center;
+
+    text-decoration: none;
+    color: #555; /* 예시 색상 */
+    padding: 5px 0; /* 클릭 영역 확보 */
+}
+
+.login-links span {
+    color: #000000;
+    padding: 0 5px; /* 구분자 양 옆에 약간의 여백 추가 */
+}

@@ -13,13 +13,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
     <link href="${pageContext.request.contextPath}/static/css/regImage.css?${resourceVersion}" rel="stylesheet"/>
 
-
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
 <div class="page-header">
-    <span class="back-btn" id="historyBack">←</span>
+    <span class="back-btn" id="historyBack">
+       <i class="fa-solid fa-arrow-left"></i>
+    </span>
     <div class="page-title">설치사진</div>
 </div>
 
@@ -42,14 +43,15 @@
             <div class="swiper-slide hardware-card dcu" data-type="dcu">
                 <div class="card-title dcu">DCU</div>
                 <div class="card-body dcu">
-                    <div><span class="card-main" id="dcuCnt"></span> <span class="card-ea">개</span></div>
+                    <div><span class="card-main" id="dcuCnt"></span> <span class="card-ea"></span></div>
                 </div>
             </div>
 
             <div class="swiper-slide hardware-card meter" data-type="meter">
                 <div class="card-title meter">계량기 / 계측기</div>
                 <div class="card-body meter">
-                    <div><span id="meterCnt" class="card-main"></span><span class="card-ea">개 (모뎀 <span id="modemCnt"></span>)</span>
+                    <div><span id="meterCnt" class="card-main"></span><span class="card-ea">(<span
+                            id="modemCnt"></span>)</span>
                     </div>
                 </div>
             </div>
@@ -65,32 +67,6 @@
     <div class="filter-container">
         <select id="selectDongForMeter"></select>
         <select id="selectHoForMeter"></select>
-
-        <!-- 호 선택 입력 -->
-        <%-- <input id="selectHoForMeterInput"
-                type="text"
-                class="form-control"
-                placeholder="호 선택"
-                readonly
-                style="cursor:pointer;">
-
-         <!-- Bootstrap Bottom Sheet -->
-         <div class="offcanvas offcanvas-bottom h-75" tabindex="-1" id="hoBottomSheet">
-             <div class="offcanvas-header">
-                 <h5 class="offcanvas-title">호 선택</h5>
-                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
-             </div>
-
-             <div class="offcanvas-body">
-                 <!-- 검색창 -->
-                 <input type="text" id="searchHoInput" class="form-control mb-3" placeholder="검색">
-
-                 <!-- 리스트 -->
-                 <ul id="hoListContainer" class="list-group">
-                     <!-- JS로 항목 렌더링 -->
-                 </ul>
-             </div>
-         </div>--%>
     </div>
 
     <div class="search-result-count">
@@ -102,7 +78,7 @@
             <thead>
             <tr>
                 <th>설치 위치</th>
-                <th>DCU ID</th>
+                <th style="font-weight: 700;">DCU ID</th>
             </tr>
             </thead>
             <tbody></tbody>
@@ -110,8 +86,6 @@
     </div>
 </div>
 
-
 <script src="${pageContext.request.contextPath}/static/js/regImage.js?${resourceVersion}"></script>
-
 </body>
 </html>

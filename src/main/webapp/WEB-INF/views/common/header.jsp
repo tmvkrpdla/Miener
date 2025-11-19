@@ -9,7 +9,7 @@
 <!-- 헤더 영역 -->
 <header class="header mobile-tuned-header">
     <div class="logo-area">
-        <img src="${pageContext.request.contextPath}/static/img/logo-white.png" alt="지구방 로고"/>
+        <img src="${pageContext.request.contextPath}/static/images/jgbLogoWhiteBack.png" alt="지구방 로고"/>
         <div class="logo-text-group">
             <span class="main-title">지구방</span>
             <span class="subtitle">지구를 구하는 방법</span>

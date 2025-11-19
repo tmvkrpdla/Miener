@@ -214,7 +214,7 @@ function drawImg(list_image) {
 
     if (!list_image || list_image.length === 0) {
         ``
-        photoGrid.append('<p>등록된 설치 사진이 없습니다.</p>');
+        photoGrid.append('<p style="white-space: nowrap;">등록된 설치 사진이 없습니다.</p>');
         return;
     }
 
@@ -393,6 +393,32 @@ function addInstallHistory(workerId) {
     });
 }
 
+
+// 버튼 활성화 상태를 업데이트하는 함수
+function updateSaveButtonState() {
+
+    const $saveButton = $('#saveMeterInfoBtn');
+    const $editableInputs = $('.detail-item.editable .value-input');
+
+    // 1. 입력 필드 변경 여부 확인
+    const isAnyInputChanged = $editableInputs.toArray().some(input => {
+        // 실제로는 원래 값과 비교해야 함. 여기서는 변경 플래그를 가진 입력 필드가 있는지 확인
+        return $(input).data('is_changed') === true;
+    });
+
+    // 2. 업로드/삭제된 파일 존재 여부 확인
+    // uploadedFiles 배열의 상태만 확인합니다.
+    const isFileStateChanged = (typeof uploadedFiles !== 'undefined' && uploadedFiles.length > 0);
+
+    // 3. 최종 활성화 판단: 입력 변경이나 파일 변경이 있으면 활성화
+    if (isAnyInputChanged || isFileStateChanged) {
+        $saveButton.addClass('active').prop('disabled', false);
+    } else {
+        $saveButton.removeClass('active').prop('disabled', true);
+    }
+}
+
+
 $(document).ready(function () {
 
     console.log(`[DEBUG] 현재 페이지 meterId: ${mid}`);
@@ -439,6 +465,8 @@ $(document).ready(function () {
         // 1. 버튼 비활성화 (중복 클릭 방지)
         $this.prop('disabled', true);
 
+        $this.removeClass('active');  // 버튼 활성화 클래스 임시 제거 (저장 중임을 시각적으로 표시)
+
         try {
             // 2. 호(Ho) 정보 업데이트
             await updHoInfo();
@@ -477,6 +505,7 @@ $(document).ready(function () {
 
                 // 6. 업로드 실패 항목이 하나라도 있다면 페이지 이동 금지
                 if (uploadResult.fail > 0) {
+                    alert(`사진 ${uploadResult.fail}개 업로드에 실패했습니다. 재시도하거나 사진을 삭제해 주세요.`);
                     shouldGoBack = false;
                     // 업로드 실패 항목 알림은 uploadAllPhotos 내에서 처리되었다고 가정
                 }
@@ -489,6 +518,7 @@ $(document).ready(function () {
         } catch (error) {
             // updHoInfo 실패 시
             console.error("최종 처리 실패:", error);
+            alert("🚨 정보 저장 중 오류가 발생했습니다. 로그를 확인해주세요.");
             shouldGoBack = false; // 오류 발생 시 페이지 이동 금지
 
         } finally {
@@ -497,10 +527,26 @@ $(document).ready(function () {
 
             // 8. 모든 필수 작업이 성공하고, 파일 업로드에 실패가 없었을 경우 페이지 이동
             if (shouldGoBack) {
+                alert("정보 저장 및 업데이트가 성공적으로 완료되었습니다.");
                 window.history.back();
+            } else {
+                // 실패 시 버튼을 다시 활성화 상태로 복구 (재수정 유도)
+                const isAnyInputChanged = $('.detail-item.editable .value-input').toArray().some(input => $(input).data('is_changed') === true);
+                if (isAnyInputChanged) {
+                    $this.addClass('active');
+                }
+                console.log("작업 실패. 페이지에 머무르며 재수정 유도.");
             }
         }
     });
+
+    // === 버튼 활성화 ===
+    $('.detail-item.editable .value-input').on('input propertychange', function () {
+        console.log('input changed');
+        $(this).data('is_changed', true);
+        updateSaveButtonState();
+    });
+    // === 버튼 활성화 ===
 
 
 });

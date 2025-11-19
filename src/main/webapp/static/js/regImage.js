@@ -1,9 +1,6 @@
 const API_URL = 'https://smartami.kr/api/v2';
 
 
-// Bootstrap Offcanvas 인스턴스
-// const hoBottomSheet = new bootstrap.Offcanvas('#hoBottomSheet');
-
 let cachedHwData = {
     dcu: [],
     meter: []
@@ -45,7 +42,7 @@ function renderSiteList(siteList) {
         // 검색 결과를 드롭다운 안에 렌더링 (모바일 화면 전체를 덮지 않도록)
         dropdownAutoWidth: true,
         // 선택하지 않은 상태에서 보일 텍스트
-        placeholder: "단지 검색",
+        placeholder: "단지를 선택하세요.",
         // 검색창에 커서 자동 포커스
         minimumResultsForSearch: 1, // 항상 검색창 표시
         width: '100%' // 부모 요소 너비에 맞춤
@@ -131,9 +128,14 @@ function renderInstallationList(type, data) {
         return item.mid_new && item.mid_new !== "";
     }).length;
 
+    // 카운트 값
+    const dcuCount = cachedHwData.dcu.length;
+    const meterCount = installedMeterCount;
+
     // 전체 카운트 반영
-    $dcuCnt.text(cachedHwData.dcu.length);
-    $meterCnt.text(installedMeterCount);
+    $dcuCnt.text(dcuCount);
+    $meterCnt.text(meterCount);
+
 
     // (boundToModem === true인 경우)
     const modemBoundMeters = cachedHwData.meter.filter(meter => meter.bound_to_modem === true).length;
@@ -258,28 +260,22 @@ function toggleFilter(type) {
 }
 
 function getCardDtype() {
+
+    // 1. swiper 객체 및 slides 존재 여부 확인
+    if (!swiper || !swiper.slides || swiper.slides.length === 0) {
+        // 단지 선택 전에 이 함수가 호출되는 상황을 대비해 안전하게 기본값 반환
+        return 'dcu';
+    }
+
     const activeSlide = swiper.slides[swiper.activeIndex];
+
+    // 2. 현재 활성화된 슬라이드가 유효한지 확인
+    if (!activeSlide || !activeSlide.dataset || !activeSlide.dataset.type) {
+        return 'dcu'; // 유효하지 않으면 기본값 반환
+    }
+
     return activeSlide.dataset.type;
-}
 
-
-// 호 리스트 렌더링 함수 (바텀시트용)
-function renderHoList(hoList) {
-    const $list = $("#hoListContainer");
-    $list.empty();
-
-    if (!hoList || hoList.length === 0) {
-        $list.append(`<li class="list-group-item text-center text-muted">호 정보 없음</li>`);
-        return;
-    }
-
-    for (const ho of hoList) {
-        $list.append(`
-            <li class="list-group-item" data-value="${ho.seq_ho}">
-                ${ho.ho_name}호
-            </li>
-        `);
-    }
 }
 
 // === 문서 준비 후 ===
@@ -293,9 +289,12 @@ $(document).ready(async function () {
         on: {
             init() {
                 console.log("✅ Swiper 초기화 완료");
-                const type = this.slides[this.activeIndex].dataset.type;
-                toggleFilter(type);
-                if (cachedHwData[type]?.length > 0) renderInstallationList(type, cachedHwData[type]);
+                /*              const type = this.slides[this.activeIndex].dataset.type;
+                              toggleFilter(type);
+                              if (cachedHwData[type]?.length > 0) renderInstallationList(type, cachedHwData[type]);*/
+
+                const initialType = this.slides.length > 0 ? this.slides[0].dataset.type : 'dcu';
+                toggleFilter(initialType);
             },
             slideChange() {
                 const type = this.slides[this.activeIndex].dataset.type;
@@ -321,11 +320,12 @@ $(document).ready(async function () {
     $("#siteSelect").on('change', async function () {
         const seqSite = $(this).val();
         if (!seqSite) {
+
+            $('.hardware-box').hide();
+            $('#installationList').hide();
             alert("단지를 선택하세요.");
             return;
         }
-
-        const type = getCardDtype();
 
         try {
             const [dcuData, meterData] = await Promise.all([
@@ -338,14 +338,25 @@ $(document).ready(async function () {
             console.log("meterData : ", meterData);
 
             cachedHwData = {dcu: dcuData || [], meter: meterData.list_ho || []};
+
+            // 데이터 로드 성공 시: 두 영역 모두 표시
+            if (cachedHwData.dcu.length > 0 || cachedHwData.meter.length > 0) {
+                $('.hardware-box').show();
+                $('#installationList').show();
+            } else {
+                $('.hardware-box').hide();
+                $('#installationList').hide();
+            }
+            const type = getCardDtype();
+
             renderInstallationList(type, cachedHwData[type]);
             callBackForTypeSelectEvent(seqSite, type);
-
-            console.log("cachedHwData : ", cachedHwData);
 
         } catch (err) {
             console.error(err);
             alert("데이터를 불러오지 못했습니다.");
+            $('.hardware-box').hide();
+            $('#installationList').hide();
         }
     });
 
@@ -409,27 +420,7 @@ $(document).ready(async function () {
     });
 
 
-    /* // 바텀시트 열기 (input 클릭 시)
-     $("#selectHoForMeterInput").on("click", function () {
-         hoBottomSheet.show();
-     });
-
-
- // 리스트에서 클릭하여 선택
-     $("#hoListContainer").on("click", "li", function () {
-         const seqHo = $(this).data("value");
-         const hoName = $(this).text();
-
-         // input에 값 반영
-         $("#selectHoForMeterInput").val(hoName);
-         $("#selectHoForMeterInput").data("value", seqHo); // seq_ho 값 저장
-
-         // 바텀시트 닫기
-         hoBottomSheet.hide();
-     });
- */
-
-// 검색 기능
+    // 검색 기능
     $("#searchHoInput").on("input", function () {
         const keyword = $(this).val().toLowerCase();
 

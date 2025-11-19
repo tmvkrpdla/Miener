@@ -35,4 +35,9 @@ public class LoginServiceImpl implements LoginService {
             return null;
         }
     }
+
+    @Override
+    public void updateLastLoginTime(Long nSeqAdmin) {
+        adminMapper.updateLastLogin(nSeqAdmin);
+    }
 }

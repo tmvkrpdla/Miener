@@ -26,7 +26,9 @@
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
 <div class="page-header">
-    <span class="back-btn" id="historyBack">←</span>
+    <span class="back-btn" id="historyBack">
+       <i class="fa-solid fa-arrow-left"></i>
+    </span>
     <div class="page-title" id="siteName">${siteName}</div>
 </div>
 
@@ -114,7 +116,7 @@
                    onchange="handleMultipleFiles(this);">
         </div>
 
-<%--        <button id="uploadAllBtn" class="save-button image-save-button">저장하기</button>--%>
+        <%--        <button id="uploadAllBtn" class="save-button image-save-button">저장하기</button>--%>
     </div>
 
 

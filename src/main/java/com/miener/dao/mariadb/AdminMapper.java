@@ -15,4 +15,11 @@ public interface AdminMapper {
      */
     Admin findByUserId(@Param("Id") String userId);
     // XML에서 Id=#{Id}로 사용했기 때문에 @Param("Id")를 사용하여 파라미터 이름을 명시해 주는 것이 안전합니다.
+
+    /**
+     * 관리자의 최종 로그인 시간을 현재 시간으로 업데이트합니다.
+     * @param nSeqAdmin 업데이트할 관리자의 기본 키
+     */
+    void updateLastLogin(@Param("nSeqAdmin") Long nSeqAdmin);
+
 }

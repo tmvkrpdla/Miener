@@ -16,17 +16,17 @@ body {
 }
 
 .back-btn {
-    font-size: 20px;
-    color: #0b9dfd;
-    margin-right: 10px;
+    color: #7D7D7D;
     cursor: pointer;
+    font-size: 20px;
 }
 
 .page-title {
     flex: 1;
     text-align: center;
+    color: #474747;
+    font-size: 16.5pt;
     font-weight: 600;
-    font-size: 16px;
 }
 
 
@@ -42,7 +42,7 @@ body {
 
 .filter-title {
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 14pt;
     margin-bottom: 8px;
 }
 

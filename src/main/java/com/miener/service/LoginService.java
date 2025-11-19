@@ -10,5 +10,11 @@ public interface LoginService {
      * @return 인증에 성공하면 Admin 객체, 실패하면 null
      */
     Admin validateUser(LoginRequest loginRequest);
+
+    /**
+     * 최종 로그인 시간을 업데이트하는 메서드 추가
+     * @param nSeqAdmin 관리자 고유 ID
+     */
+    void updateLastLoginTime(Long nSeqAdmin);
 }
 

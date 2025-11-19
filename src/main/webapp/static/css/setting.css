@@ -1,57 +1,27 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f2f5;
+/* 🔹 프로필 카드 */
+.profile-card {
+    background: white;
+    text-align: center;
+    margin: 10px;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 은은한 그림자 */
+
 }
 
-.mobile-frame {
-    width: 375px;
-    margin: 20px auto;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-}
-
-.header-nav {
-    display: flex;
-    gap: 10px;
-}
-
-.header-logo {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.profile-section {
-    padding: 20px;
-    background-color: white;
-    border-bottom: 1px solid #eee;
-}
-
-.profile-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+.menu-title {
+    color: #000000;
+    font-size: 13.5pt;
+    font-weight: 600;
 }
 
 .profile-pic {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid #ccc;
+    border: 3px solid #e0e0e0;
+    margin: 0 auto;
 }
 
 .profile-pic img {
@@ -61,70 +31,155 @@ body {
 }
 
 .profile-name {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
-    text-align: center;
-}
-
-.profile-id {
-    font-size: 14px;
-    color: #666;
-    text-align: center;
+    color: #474747;
+    font-size: 12.0pt;
+    font-weight: 400;
 }
 
 .profile-details {
     display: flex;
     justify-content: space-around;
     margin-top: 20px;
+    gap: 5px;
 }
 
 .detail-item {
-    text-align: center;
-}
-
-.detail-item p {
-    margin: 0;
-    font-size: 14px;
+    flex: 1;
 }
 
 .detail-item small {
-    color: #999;
+    color: #929292;
+    font-size: 8.25pt;
+    font-weight: 400;
+}
+
+.detail-item p {
+    margin: 3px 0 0;
+    color: #474747;
+    font-size: 9.75pt;
+    font-weight: 400;
+    background: #F0F0F0;
 }
 
 .last-login {
-    font-size: 12px;
-    color: #999;
-    text-align: center;
-    margin-top: 10px;
+    color: #00A8FF;
+    font-size: 8.25pt;
+    font-weight: 400;
+    display: flex;
+    justify-content: right;
+    margin-top: 15px;
 }
 
-.admin-features {
-    padding: 20px;
-    background-color: white;
-    margin-top: 10px;
+/* 전체 features-card 컨테이너 스타일 */
+.features-card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 은은한 그림자 */
+    margin: 10px;
+    padding: 12px 12px 200px 12px;
+    border-radius: 10px;
+    /*box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);*/
 }
 
+.features-card h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: left; /* 제목 왼쪽 정렬 */
+}
+
+/* 그리드 컨테이너 스타일 */
 .features-grid {
     display: grid;
+    /* 4열 격자 (각 아이템의 너비가 1fr로 균등 분배) */
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    gap: 10px; /* 아이템 사이의 간격 */
+    justify-items: center; /* 아이템들을 셀의 중앙에 정렬 */
+    align-items: stretch; /* 아이템의 높이를 셀에 맞춰 늘림 */
+}
+
+
+/* 각 기능 아이템 (feature-item 또는 feature-link) 스타일 */
+.feature-link { /* <a> 태그와 <div> 태그 모두에 적용 */
+    display: flex;
+    flex-direction: column; /* 아이콘과 텍스트를 세로로 정렬 */
+    justify-content: center; /* 세로 중앙 정렬 */
+    align-items: center; /* 가로 중앙 정렬 */
+
+    width: 100%;
+
+    /* 이미지에 보이는 사각형 박스 스타일 */
+    background-color: #F4F4F4;
+    border: none;
+    border-radius: 7px; /* 모서리 둥글게 */
+
+    padding: 12px 12px; /* 내부 여백 (텍스트 길이에 따라 조절) */
+    text-decoration: none; /* 링크 밑줄 제거 */
+    color: #333; /* 텍스트 색상 */
+    font-size: 14px; /* 텍스트 크기 */
     text-align: center;
+
+    transition: all 0.2s ease-in-out; /* 호버 효과를 위한 전환 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 은은한 그림자 */
 }
 
-.feature-item {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    padding: 15px 5px;
-    /*border: 1px solid #ddd;*/
+
+/* 아이콘 스타일 */
+.feature-link i {
+    font-size: 24px;
+    color: #00A8FF;
 }
 
-/*.feature-item img {*/
-/*    width: 40px;*/
-/*    height: 40px;*/
-/*}*/
+/* 텍스트 스타일 */
+.feature-link p {
+    margin: 0; /* 기본 마진 제거 */
+    line-height: 1.2;
+}
+
+
+/* ---------------------------------------------------------------- */
+
+/* ✅ 비활성화된 기능 아이템 스타일 */
+.feature-disabled {
+    /* 클릭 방지 (선택 사항: 스타일만 변경하고 클릭은 허용할 경우 이 코드를 제외) */
+    pointer-events: none;
+    opacity: 0.7; /* 약간 흐리게 처리하여 비활성 상태 강조 */
+}
+
+/* ✅ 1. 비활성화된 아이템의 아이콘 스타일 (흑백 처리) */
+.feature-disabled i {
+    color: #888888 !important; /* 아이콘 색상을 회색으로 변경 (흑백에 가까운 톤) */
+
+    /* filter 속성을 사용하여 흑백 효과를 줄 수도 있습니다. */
+    /* filter: grayscale(100%); */
+}
+
+/* ✅ 2. 비활성화된 아이템의 텍스트 스타일 */
+.feature-disabled p {
+    color: #CCCCCC !important; /* 텍스트 색상을 CCCCCC로 변경 */
+}
+
+/* ---------------------------------------------------------------- */
+
+
+.feature-item:hover {
+    background-color: #eaf3ff;
+    transform: translateY(-2px);
+}
+
+.feature-item span {
+    font-size: 1.5rem;
+}
 
 .feature-item p {
-    margin-top: 5px;
-    font-size: 12px;
+    margin-top: 6px;
+    color: #474747;
+    font-size: 8.25pt;
+    font-weight: 400;
+}
+
+
+.menu-title-container {
+    margin-bottom: 10px;
 }

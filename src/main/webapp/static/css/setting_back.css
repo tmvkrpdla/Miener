@@ -1,0 +1,125 @@
+/* 🔹 프로필 카드 */
+.profile-card {
+    /*background: var(--card-bg);*/
+    border-radius: 20px;
+    padding: 25px 20px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #e0e0e0;
+    margin: 0 auto;
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-name {
+    color: #474747;
+    font-size: 12.0pt;
+    font-weight: 400;
+}
+
+.profile-details {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.detail-item {
+    flex: 1;
+}
+
+.detail-item small {
+    color: #929292;
+    font-size: 8.25pt;
+    font-weight: 400;
+}
+
+.detail-item p {
+    margin: 3px 0 0;
+    color: #474747;
+    font-size: 9.75pt;
+    font-weight: 400;
+    background: #F0F0F0;
+}
+
+.last-login {
+    font-size: 0.75rem;
+    /*color: var(--text-light);*/
+    margin-top: 15px;
+}
+
+/* 🔹 관리자 기능 카드 */
+.features-card {
+    /*background: var(--card-bg);*/
+    border-radius: 20px;
+    margin-top: 20px;
+    padding: 20px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.features-card h3 {
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 12px;
+}
+
+.feature-item {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 15px 5px;
+    text-align: center;
+    transition: 0.2s ease;
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+}
+
+.feature-item:hover {
+    background-color: #eaf3ff;
+    transform: translateY(-2px);
+}
+
+.feature-item span {
+    font-size: 1.5rem;
+}
+
+.feature-item p {
+    margin-top: 6px;
+    font-size: 0.8rem;
+}
+
+/* 🔹 반응형 조정 */
+@media (max-width: 480px) {
+    .profile-pic {
+        width: 80px;
+        height: 80px;
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .app-header {
+        padding: 12px 15px;
+    }
+
+    .app-content {
+        padding: 15px;
+    }
+}

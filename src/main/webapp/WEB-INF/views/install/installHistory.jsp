@@ -20,7 +20,9 @@
 
 
 <div class="page-header">
-    <span class="back-btn" id="historyBack">←</span>
+    <span class="back-btn" id="historyBack">
+       <i class="fa-solid fa-arrow-left"></i>
+    </span>
     <div class="page-title">설치이력</div>
 </div>
 

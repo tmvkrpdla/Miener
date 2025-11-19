@@ -65,7 +65,7 @@ function drawImg(list_image) {
 
     if (!list_image || list_image.length === 0) {
         ``
-        photoGrid.append('<p>등록된 설치 사진이 없습니다.</p>');
+        photoGrid.append('<p style="white-space: nowrap;">등록된 설치 사진이 없습니다.</p>');
         return;
     }
 
@@ -385,14 +385,10 @@ $(document).ready(function () {
             return;
         }
 
-        /*   // `uploadedFiles`가 전역 변수라고 가정
-           if (typeof uploadedFiles === 'undefined' || uploadedFiles.length === 0) {
-               console.log("등록할 사진 없음.");
-               return;
-           }*/
-
         // 2. 버튼 비활성화 (중복 클릭 방지)
         $this.prop('disabled', true);
+        // 버튼 활성화 클래스 임시 제거 (저장 중임을 시각적으로 표시)
+        $this.removeClass('active');
 
         try {
 
@@ -432,6 +428,7 @@ $(document).ready(function () {
 
                 // 업로드 실패 시
                 if (uploadResult.fail > 0) {
+                    alert(`사진 ${uploadResult.fail}개 업로드에 실패했습니다. 재시도하거나 사진을 삭제해 주세요.`);
                     shouldGoBack = false;
                 }
             } else {
@@ -439,9 +436,16 @@ $(document).ready(function () {
                 // 사진이 없더라도 업데이트가 성공했으므로 페이지 이동 (아래 finally에서 처리)
             }
 
+            // ✅ UX 개선 2: 최종 성공 시 알림
+            if (shouldGoBack) {
+                alert("정보 저장 및 업데이트가 성공적으로 완료되었습니다.");
+                // 저장 성공 시 data-old 값과 is_changed 플래그를 초기화하는 로직도 추가해야 함
+            }
+
         } catch (error) {
             // DCU 정보 업데이트 실패, uploadAllPhotos 내 seqDcu 오류 등
             console.error("최종 처리 실패:", error);
+            alert("🚨 정보 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
             shouldGoBack = false; // 오류 발생 시 페이지 이동 금지
         } finally {
             // 6. 버튼 재활성화
@@ -449,12 +453,44 @@ $(document).ready(function () {
 
             // 7. 성공 여부에 따라 페이지 이동
             if (shouldGoBack) {
-                // window.history.back();
+                window.history.back();
+            } else {
+                // 실패 시 버튼을 다시 활성화 상태로 복구 (재수정 유도)
+                const isAnyInputChanged = $('.detail-item.editable .value-input').toArray().some(input => $(input).data('is_changed') === true);
+                if (isAnyInputChanged) {
+                    $this.addClass('active');
+                }
+                console.log("작업 실패. 페이지에 머무르며 재수정 유도.");
             }
         }
     });
 
 });
+
+
+// 버튼 활성화 상태를 업데이트하는 함수
+function updateSaveButtonState() {
+
+    const $saveButton = $('#saveDcuInfoBtn');
+    const $editableInputs = $('.detail-item.editable .value-input');
+
+    // 1. 입력 필드 변경 여부 확인
+    const isAnyInputChanged = $editableInputs.toArray().some(input => {
+        // 실제로는 원래 값과 비교해야 함. 여기서는 변경 플래그를 가진 입력 필드가 있는지 확인
+        return $(input).data('is_changed') === true;
+    });
+
+    // 2. 업로드/삭제된 파일 존재 여부 확인
+    // uploadedFiles 배열의 상태만 확인합니다.
+    const isFileStateChanged = (typeof uploadedFiles !== 'undefined' && uploadedFiles.length > 0);
+
+    // 3. 최종 활성화 판단: 입력 변경이나 파일 변경이 있으면 활성화
+    if (isAnyInputChanged || isFileStateChanged) {
+        $saveButton.addClass('active').prop('disabled', false);
+    } else {
+        $saveButton.removeClass('active').prop('disabled', true);
+    }
+}
 
 
 // 동적으로 생성된 삭제 버튼 클릭 이벤트
@@ -474,6 +510,18 @@ $(document).on('click', '.delete-btn', function () {
     $(`#${fileIdToDelete}`).remove();
 
     console.log(`파일 ${fileIdToDelete} 제거됨. 남은 파일 수: ${uploadedFiles.length}`);
+
 });
+
+
+
+// === 버튼 활성화 ===
+$(function() {
+    $('.detail-item.editable .value-input').on('input propertychange', function () {
+        $(this).data('is_changed', true);
+        updateSaveButtonState();
+    });
+});
+// === 버튼 활성화 ===
 
 
