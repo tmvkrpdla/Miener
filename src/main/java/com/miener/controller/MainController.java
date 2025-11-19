@@ -60,9 +60,8 @@ public class MainController {
         String userPhone = (String) session.getAttribute("userPhone");
         String userRole = (String) session.getAttribute("userRole");
         Date lastLogin = (Date) session.getAttribute("lastLogin");
+        String companyName = (String) session.getAttribute("companyName");
 
-        // TODO: company_id를 이용하여 회사 이름 조회 로직 추가 필요 (예시에서는 하드코딩)
-        String companyName = "더글로리";
 
         // ✅ Model에 데이터 추가
         model.addAttribute("displayName", userName + " (" + userId + ")"); // "박연진 (pyj)"

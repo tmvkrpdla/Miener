@@ -16,5 +16,6 @@ public class Admin {
     private Long companyId; // ✅ 추가: 회사 ID (소속 회사명을 조회하기 위함)
     private String roleName; // ✅ 추가: 권한 레벨 (DB 조인을 통해 가져와야 함)
     private Date dtLastLogin; // ✅ 추가: 최종 로그인 날짜
+    private String companyName;
 
 }

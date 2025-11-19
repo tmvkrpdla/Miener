@@ -12,11 +12,13 @@
                a.entityType,
                a.dtLastLogin,
                a.company_id,
-               r.role_name AS roleName
+               r.role_name AS roleName,
+               c.CompanyName as companyName
         FROM admin a
-                 LEFT JOIN
-             role r ON r.role_id = a.role_id
-        WHERE a.Id = #{Id}
+                 LEFT JOIN role r ON r.role_id = a.role_id
+                 left join company c on a.company_id = c.nSeqCompany
+        WHERE 1 = 1
+          and a.Id = #{Id}
           AND a.bActive = 1
     </select>
 

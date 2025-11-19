@@ -60,30 +60,46 @@ function resetFilters() {
     loadAndApplyFilters();
 }
 
-/*function resetFilters() {
-    // 날짜 필터 초기화: '오늘' (today)로 설정
-    $('#dateFilter').val('today');
+// 작업자 목록 불러오기
+function getWorkerList() {
+    $.ajax({
+        url: 'https://smartami.kr/api/v2/workers',
+        method: 'GET',
+        success: function (response) {
+            renderingWorkerList(response)
+        },
+        error: function () {
+            alert("작업자 정보를 불러오지 못했습니다.");
+        }
+    });
+}
 
-    // 작업자 필터 초기화: '전체' (all)로 설정
-    $('#workerFilter').val('all');
+/**
+ * API 응답 데이터를 사용하여 드롭다운 메뉴에 '전체' 옵션과 작업자 목록을 렌더링합니다.
+ * @param {Array<Object>} data 작업자 목록 배열
+ */
+function renderingWorkerList(data) {
+    const $workerFilter = $('#workerFilter');
 
-    // 지역 필터 초기화: '전체' (all)로 설정
-    $('#regionFilter').val('all');
+    $workerFilter.empty();
 
-    $('#siteSelect').val(null).trigger('change');
+    const $allOption = $('<option>', {
+        value: 'all',
+        text: '전체',
+        selected: true // 기본 선택 상태로 지정
+    });
+    $workerFilter.append($allOption);
 
-    // 3. 탭 상태 초기화 (선택 사항: '전체' 탭으로 이동)
-    // 현재 활성화된 탭이 아닌 '전체'로 탭 UI를 강제로 변경하고 싶다면:
-    // changeTab('all');
-
-    // 하지만, 현재 탭은 유지하고 필터만 초기화하는 경우가 많으므로,
-    // 현재 UI 상태를 유지한 채 통합 필터링 함수만 호출합니다.
-
-    // 4. ✅ 필터가 초기화된 상태로 리스트를 다시 필터링 및 렌더링
-    // (applySearchFiltersAndRender 함수 내부에서 현재 탭 상태와 초기화된 필터 값을 읽어 필터링을 수행합니다.)
-    applySearchFiltersAndRender();
-}*/
-
+    if (data && Array.isArray(data)) {
+        data.forEach(worker => {
+            const $option = $('<option>', {
+                value: worker.seq,
+                text: worker.name
+            });
+            $workerFilter.append($option);
+        });
+    }
+}
 
 /**
  * 단지 리스트를 렌더링하고 Select2를 초기화합니다.
@@ -544,4 +560,5 @@ $(document).ready(function () {
 
     // 초기 단지 리스트
     getSiteList('apt');
+    getWorkerList();
 });

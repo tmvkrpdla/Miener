@@ -51,9 +51,9 @@
         <div class="filter-group">
             <label for="workerFilter" class="filter-label">설치 작업자</label>
             <select id="workerFilter">
-                <option value="all" selected>전체</option>
-                <option value="김화경">김화경</option>
-                <option value="이호성">이호성</option>
+               <%-- <option value="all" selected>전체</option>
+                <option value="45">김화경</option>
+                <option value="29">이호성</option>--%>
             </select>
         </div>
 

@@ -97,9 +97,9 @@
         }
 
         .profile-name {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-top: 12px;
+            color: #474747;
+            font-size: 12.0pt;
+            font-weight: 400;
         }
 
         .profile-sub {
@@ -111,17 +111,25 @@
             display: flex;
             justify-content: space-around;
             margin-top: 20px;
+            gap: 5px;
+        }
+
+        .detail-item {
+            flex: 1;
         }
 
         .detail-item small {
-            color: var(--text-light);
-            display: block;
-            font-size: 0.75rem;
+            color: #929292;
+            font-size: 8.25pt;
+            font-weight: 400;
         }
 
         .detail-item p {
             margin: 3px 0 0;
-            font-weight: 500;
+            color: #474747;
+            font-size: 9.75pt;
+            font-weight: 400;
+            background: #F0F0F0;
         }
 
         .last-login {
@@ -234,23 +242,23 @@
     <!-- 프로필 -->
     <div class="profile-card">
         <div class="profile-pic">
-            <img src="https://via.placeholder.com/150" alt="프로필 사진">
+<%--            <img src="https://via.placeholder.com/150" alt="프로필 사진">--%>
         </div>
         <p class="profile-name">${displayName}</p>
-        <p class="profile-sub">${roleAndCompany}</p>
+        <%--        <p class="profile-sub">${roleAndCompany}</p>--%>
 
         <div class="profile-details">
             <div class="detail-item">
-                <small>소속 회사</small>
                 <p>${companyName}</p>
+                <small>소속 회사</small>
             </div>
             <div class="detail-item">
-                <small>권한 레벨</small>
                 <p>${roleLevel}</p>
+                <small>권한 레벨</small>
             </div>
             <div class="detail-item">
-                <small>연락처</small>
                 <p>${contactPhone}</p>
+                <small>연락처</small>
             </div>
         </div>
         <p class="last-login">마지막 로그인: ${formattedLastLogin}</p>
@@ -289,6 +297,7 @@
 <%--    <button>👤</button>--%>
 <%--</nav>--%>
 
-</body>\
+</body>
+\
 
 </html>

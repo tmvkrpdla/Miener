@@ -72,101 +72,6 @@
     </select>
 
 
-    <select id="getMeterInstallationHistory" parameterType="com.miener.dto.MeterInstallHistorySearchDto"
-            resultType="com.miener.dto.InstallHistoryResultDto">
-        SELECT
-        s.name AS siteName,
-        s.nSeqSite as seqSite,
-        s.MetroProv,
-        s.CityDist,
-        ad.Name AS dongName,
-        ah.name AS hoName,
-        ah.nSeqMeter as seqMeter,
-        ah.nSeqAptHo as seqHo,
-        ah.MidPrev,
-        a.Name AS workerName,
-        m.mid,
-        mih.dtInstalled AS installDate,
-        mih.nSeqHo AS seqHo
-        FROM meter_install_history mih
-        LEFT JOIN aptho ah ON ah.nSeqAptHo = mih.nSeqHo
-        LEFT JOIN aptdong ad ON ad.nSeqAptDong = ah.nSeqAptDong
-        LEFT JOIN site s ON s.nSeqSite = ad.nSeqSite
-        LEFT JOIN admin a ON a.nSeqAdmin = mih.nSeqWorker
-        LEFT JOIN meter m ON ah.nSeqMeter = m.nSeqMeter
-
-        <where>
-            <if test="seqSite != null and seqSite != ''">
-                AND s.nSeqSite = #{seqSite}
-            </if>
-            <if test="seqWorker != null and seqWorker != ''">
-                AND mih.nSeqWorker = #{seqWorker}
-            </if>
-            <if test="metroProv != null and metroProv != ''">
-                AND s.MetroProv = #{metroProv}
-            </if>
-
-            <if test="installDateFrom != null">
-                AND mih.dtInstalled <![CDATA[ >= ]]> #{installDateFrom}
-            </if>
-
-            <if test="installDateTo != null">
-                AND mih.dtInstalled <![CDATA[ <= ]]> #{installDateTo}
-            </if>
-        </where>
-
-        ORDER BY mih.dtInstalled DESC
-<!--        <if test="limit != null and offset != null">-->
-<!--            LIMIT #{limit} OFFSET #{offset}-->
-<!--        </if>-->
-    </select>
-
-
-    <select id="getDcuInstallationHistory" parameterType="com.miener.dto.DcuInstallHistorySearchDto"
-            resultType="com.miener.dto.InstallHistoryResultDto">
-        SELECT
-        s.Name as siteName,
-        s.nSeqSite as seqSite,
-        s.MetroProv,
-        s.CityDist,
-        d.DcuId,
-        d.nSeqDcu as seqDcu,
-        d.Location,
-        dih.dtInstalled AS installDate,
-        a.Name AS workerName
-        from
-        dcu_install_history dih
-        left join dcu d on d.nSeqDcu = dih.nSeqDcu
-        left join site s on s.nSeqSite = dih.nSeqSite
-        left join admin a on a.nSeqAdmin = dih.nSeqWorker
-
-        <where>
-            <if test="seqSite != null and seqSite != ''">
-                AND dih.nSeqSite = #{seqSite}
-            </if>
-            <if test="seqWorker != null and seqWorker != ''">
-                AND dih.nSeqWorker = #{seqWorker}
-            </if>
-            <if test="metroProv != null and metroProv != ''">
-                AND s.MetroProv = #{metroProv}
-            </if>
-
-            <if test="installDateFrom != null">
-                AND dih.dtInstalled <![CDATA[ >= ]]> #{installDateFrom}
-            </if>
-
-            <if test="installDateTo != null">
-                AND dih.dtInstalled <![CDATA[ <= ]]> #{installDateTo}
-            </if>
-        </where>
-
-        ORDER BY dih.dtInstalled DESC
-        <if test="limit != null and offset != null">
-            LIMIT #{limit} OFFSET #{offset}
-        </if>
-    </select>
-
-
     <select id="countMeterInstallationHistory" parameterType="com.miener.dto.MeterInstallHistorySearchDto"
             resultType="int">
         SELECT COUNT(*)
@@ -174,7 +79,8 @@
         LEFT JOIN aptho ah ON ah.nSeqAptHo = mih.nSeqHo
         LEFT JOIN aptdong ad ON ad.nSeqAptDong = ah.nSeqAptDong
         LEFT JOIN site s ON s.nSeqSite = ad.nSeqSite
-        LEFT JOIN admin a ON a.nSeqAdmin = mih.nSeqWorker
+        -- LEFT JOIN admin a ON a.nSeqAdmin = mih.nSeqWorker
+        left join worker w on w.nSeqWorker = mih.nSeqWorker
         LEFT JOIN meter m ON ah.nSeqMeter = m.nSeqMeter
 
         <where>
@@ -199,6 +105,105 @@
     </select>
 
 
+    <select id="getMeterInstallationHistory" parameterType="com.miener.dto.MeterInstallHistorySearchDto"
+            resultType="com.miener.dto.InstallHistoryResultDto">
+        SELECT
+        s.name AS siteName,
+        s.nSeqSite as seqSite,
+        s.MetroProv,
+        s.CityDist,
+        ad.Name AS dongName,
+        ah.name AS hoName,
+        ah.nSeqMeter as seqMeter,
+        ah.nSeqAptHo as seqHo,
+        ah.MidPrev,
+        -- a.Name AS workerName,
+        w.WorkerName AS workerName,
+        m.mid,
+        mih.dtInstalled AS installDate,
+        mih.nSeqHo AS seqHo
+        FROM meter_install_history mih
+        LEFT JOIN aptho ah ON ah.nSeqAptHo = mih.nSeqHo
+        LEFT JOIN aptdong ad ON ad.nSeqAptDong = ah.nSeqAptDong
+        LEFT JOIN site s ON s.nSeqSite = ad.nSeqSite
+        -- LEFT JOIN admin a ON a.nSeqAdmin = mih.nSeqWorker
+        left join worker w on w.nSeqWorker = mih.nSeqWorker
+        LEFT JOIN meter m ON ah.nSeqMeter = m.nSeqMeter
+
+        <where>
+            <if test="seqSite != null and seqSite != ''">
+                AND s.nSeqSite = #{seqSite}
+            </if>
+            <if test="seqWorker != null and seqWorker != ''">
+                AND mih.nSeqWorker = #{seqWorker}
+            </if>
+            <if test="metroProv != null and metroProv != ''">
+                AND s.MetroProv = #{metroProv}
+            </if>
+
+            <if test="installDateFrom != null">
+                AND mih.dtInstalled <![CDATA[ >= ]]> #{installDateFrom}
+            </if>
+
+            <if test="installDateTo != null">
+                AND mih.dtInstalled <![CDATA[ <= ]]> #{installDateTo}
+            </if>
+        </where>
+
+        ORDER BY mih.dtInstalled DESC
+        <!--        <if test="limit != null and offset != null">-->
+        <!--            LIMIT #{limit} OFFSET #{offset}-->
+        <!--        </if>-->
+    </select>
+
+
+    <select id="getDcuInstallationHistory" parameterType="com.miener.dto.DcuInstallHistorySearchDto"
+            resultType="com.miener.dto.InstallHistoryResultDto">
+        SELECT
+        s.Name as siteName,
+        s.nSeqSite as seqSite,
+        s.MetroProv,
+        s.CityDist,
+        d.DcuId,
+        d.nSeqDcu as seqDcu,
+        d.Location,
+        dih.dtInstalled AS installDate,
+        -- a.Name AS workerName
+        w.WorkerName AS workerName
+        from
+        dcu_install_history dih
+        left join dcu d on d.nSeqDcu = dih.nSeqDcu
+        left join site s on s.nSeqSite = dih.nSeqSite
+        -- left join admin a on a.nSeqAdmin = dih.nSeqWorker
+        left join worker w on w.nSeqWorker = dih.nSeqWorker
+
+        <where>
+            <if test="seqSite != null and seqSite != ''">
+                AND dih.nSeqSite = #{seqSite}
+            </if>
+            <if test="seqWorker != null and seqWorker != ''">
+                AND dih.nSeqWorker = #{seqWorker}
+            </if>
+            <if test="metroProv != null and metroProv != ''">
+                AND s.MetroProv = #{metroProv}
+            </if>
+
+            <if test="installDateFrom != null">
+                AND dih.dtInstalled <![CDATA[ >= ]]> #{installDateFrom}
+            </if>
+
+            <if test="installDateTo != null">
+                AND dih.dtInstalled <![CDATA[ <= ]]> #{installDateTo}
+            </if>
+        </where>
+
+        ORDER BY dih.dtInstalled DESC
+        <!--        <if test="limit != null and offset != null">-->
+        <!--            LIMIT #{limit} OFFSET #{offset}-->
+        <!--        </if>-->
+    </select>
+
+
     <select id="countDcuInstallationHistory" parameterType="com.miener.dto.DcuInstallHistorySearchDto"
             resultType="int">
         SELECT COUNT(*)
@@ -206,7 +211,8 @@
         dcu_install_history dih
         left join dcu d on d.nSeqDcu = dih.nSeqDcu
         left join site s on s.nSeqSite = dih.nSeqSite
-        left join admin a on a.nSeqAdmin = dih.nSeqWorker
+--         left join admin a on a.nSeqAdmin = dih.nSeqWorker
+        left join worker w on w.nSeqWorker = dih.nSeqWorker
 
         <where>
             <if test="seqSite != null and seqSite != ''">

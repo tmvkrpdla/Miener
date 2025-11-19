@@ -19,17 +19,6 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-/*    @PostMapping("/login")
-    public String login() {
-        boolean isValid = true;
-
-        if (isValid) {
-            return "redirect:/profile/settings"; // 로그인 성공 시 메인 페이지로 이동
-        } else {
-            return "redirect:/login?error"; // 실패 시 다시 로그인 페이지로
-        }
-    }*/
-
 
     @PostMapping("/login")
     public String login(@ModelAttribute LoginRequest loginRequest, HttpSession session) {
@@ -46,31 +35,27 @@ public class LoginController {
             session.setAttribute("userRole", admin.getRoleName()); // ✅ 권한 레벨 (예: "슈퍼 관리자")
             session.setAttribute("userCompanyId", admin.getCompanyId()); // ✅ 회사 ID
             session.setAttribute("lastLogin", admin.getDtLastLogin()); // ✅ 마지막 로그인 시간
+            session.setAttribute("companyName", admin.getCompanyName()); //
 
             // 3. 메인 페이지로 이동
             return "redirect:/profile/settings";
         } else {
             // 4. 로그인 실패
             // 오류 메시지를 포함하여 로그인 페이지로 리다이렉트
-            return "redirect:/login?error=true";
+            return "redirect:/";
         }
     }
 
-    // GET /login 엔드포인트도 필요합니다.
-    // @GetMapping("/login")
-    // public String showLoginForm() {
-    //     return "login"; // login.jsp 또는 login.html 뷰 파일 이름
-    // }
+
 
 
     @RequestMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/login";
+//        return "redirect:/login";
+        return "redirect:/";
+
     }
-
-
-
 
 
 }

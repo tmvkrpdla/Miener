@@ -1,10 +1,7 @@
 package com.miener.service;
 
-import com.miener.dao.mariadb.AdminMapper;
 import com.miener.dto.Admin;
 import com.miener.dto.LoginRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 public interface LoginService {
     /**
