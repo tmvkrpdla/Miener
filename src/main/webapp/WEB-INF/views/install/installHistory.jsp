@@ -51,9 +51,9 @@
         <div class="filter-group">
             <label for="workerFilter" class="filter-label">설치 작업자</label>
             <select id="workerFilter">
-               <%-- <option value="all" selected>전체</option>
-                <option value="45">김화경</option>
-                <option value="29">이호성</option>--%>
+                <%-- <option value="all" selected>전체</option>
+                 <option value="45">김화경</option>
+                 <option value="29">이호성</option>--%>
             </select>
         </div>
 
@@ -106,7 +106,7 @@
 </div>
 
 <div class="search-result-count">
-    검색 결과 : <span id="resultCount"></span>
+    <span class="result-count-ea">검색 결과 : </span><span id="resultCount" class="result-count-value"></span>
 </div>
 
 <div class="card-list" id="installationList">

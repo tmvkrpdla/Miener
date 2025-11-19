@@ -375,6 +375,7 @@ input#searchKeyword {
     width: 30px;
     height: 30px;
     animation: spin 1s linear infinite;
+    margin: 0 auto;
 }
 
 @keyframes spin {
@@ -434,4 +435,22 @@ input#searchKeyword {
 .date-input::-webkit-calendar-picker-indicator {
     /*opacity: 0; !* 아이콘 숨기기 *!*/
     cursor: pointer;
+}
+
+.result-count-ea {
+    color: #929292;
+    font-size: 9.75pt;
+    font-weight: 400;
+}
+
+.result-count-value {
+    color: #474747;
+    font-size: 9.75pt;
+    font-weight: 600;
+}
+
+div.no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

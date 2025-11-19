@@ -360,10 +360,8 @@ function loadAndApplyFilters() {
         // ✅ 날짜 필터 처리 로직: 백엔드가 이해할 수 있는 형식으로 날짜를 변환
         // 'today', 'yesterday', 'thisWeek', 'thisMonth', 'dateTarget' 처리
         ...getDateRangeParams(dateValue, startDateValue, endDateValue)
-        // 백엔드에서 pagination 처리가 필요하다면 page, size 등의 파라미터 추가
     };
 
-    // 4. API URL 결정 (탭에 따라 달라짐)
     let apiEndpoint;
     if (initialTab === 'meter') {
         apiEndpoint = '../install/api/meter/installList';
@@ -420,6 +418,9 @@ function handleLoadSuccess(results) {
         renderInstallationList(combinedList);
     } else {
         $listContainer.append('<div class="no-data">조회된 설치 이력이 없습니다.</div>');
+
+        $("#resultCount").text('0');
+
     }
 }
 
@@ -500,28 +501,9 @@ $(document).ready(function () {
 
 
     // ✅ 모든 필터 <select>에 change 이벤트 리스너 연결
-    /* $('#workerFilter, #regionFilter, #siteSelect').on('change', function () {
-         applySearchFiltersAndRender();
-     });*/
     $('#workerFilter, #regionFilter, #siteSelect').on('change', function () {
         loadAndApplyFilters();
     });
-
-
-    /*    $('#dateFilter').on('change', function () {
-            const selectedValue = $(this).val();
-
-            if (selectedValue === 'dateTarget') {
-                $('#dateTargetInputs').show();
-            } else {
-                $('#dateTargetInputs').hide();
-                $('#startDate').val('');
-                $('#endDate').val('');
-            }
-
-            // UI 변경 후, 필터링 대신 데이터를 다시 로드
-            loadAndApplyFilters();
-        });*/
 
 
     $('#dateFilter').on('change', function () {
