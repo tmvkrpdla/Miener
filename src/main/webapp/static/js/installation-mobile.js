@@ -99,6 +99,18 @@ function renderingWorkerList(data) {
             $workerFilter.append($option);
         });
     }
+
+    // ===========================================
+    // ✅ Select2 초기화 추가
+    // ===========================================
+    $workerFilter.select2({
+        language: "ko",
+        // 검색창에 커서 자동 포커스
+        minimumResultsForSearch: 1, // 항상 검색창 표시
+        // 모바일 환경에 최적화된 크기
+        dropdownAutoWidth: true,
+        width: '100%' // 부모 요소 너비에 맞춤
+    });
 }
 
 /**
@@ -123,6 +135,7 @@ function renderSiteList(siteList) {
         minimumResultsForSearch: 1, // 항상 검색창 표시
         width: '100%' // 부모 요소 너비에 맞춤
     });
+
 
 }
 
@@ -493,10 +506,31 @@ function getDateRangeParams(dateValue, startDateValue, endDateValue) {
 }
 
 
+/**
+ * flatpickr를 사용하여 모바일 친화적인 날짜 선택기를 초기화합니다.
+ */
+function initFlatpickr() {
+    // 1. flatpickr 옵션 설정
+    const config = {
+        locale: "ko", // 한국어 설정
+        dateFormat: "Y-m-d", // 날짜 형식: 2025-11-19
+        allowInput: false, // 입력 필드에 직접 입력 허용
+        disableMobile: true,
+        // plugins: [new yearSelectPlugin()]
+    };
+
+    // 2. startDate와 endDate에 flatpickr 적용
+    flatpickr("#startDate", config);
+    flatpickr("#endDate", config);
+}
+
+
 $(document).ready(function () {
 
+    // ✅ flatpickr 초기화 호출
+    // initFlatpickr();
+
     // 페이지 진입 시 데이터 로드
-    // loadInstallationList();
     loadAndApplyFilters();
 
 
@@ -543,4 +577,6 @@ $(document).ready(function () {
     // 초기 단지 리스트
     getSiteList('apt');
     getWorkerList();
+
+
 });

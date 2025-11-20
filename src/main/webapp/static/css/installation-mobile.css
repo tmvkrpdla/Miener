@@ -59,7 +59,6 @@ body {
 }
 
 
-
 .filter-title-container {
     margin-bottom: 5px;
     display: flex;
@@ -231,6 +230,9 @@ input#searchKeyword {
     color: #FFFFFF;
     font-size: 10.5pt;
     font-weight: 400;
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 .badge-dcu {
@@ -242,6 +244,9 @@ input#searchKeyword {
     color: #FFFFFF;
     font-size: 10.5pt;
     font-weight: 400;
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 /* ✅ 바텀 시트 */
@@ -442,3 +447,43 @@ div.no-data {
     align-items: center;
     justify-content: center;
 }
+
+
+/* 년도 입력 필드 너비 조정 */
+.flatpickr-current-month .numInputWrapper {
+    width: 7ch;
+    /*padding: 5px;*/
+
+}
+
+.flatpickr-current-month {
+    font-size: 150%;
+}
+
+
+/* flatpickr 년도 선택기 UI 개선 */
+
+
+.select2-container--default .select2-selection--single {
+    background-color: #00A8FF !important;
+    border: none !important;
+    border-radius: 6px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 42px !important;
+    color: white;
+}
+
+.select2-container .select2-selection--single {
+    height: 42px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 42px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: white !important;
+}
+

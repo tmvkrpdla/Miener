@@ -1,8 +1,12 @@
 
 body {
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: "Noto Sans KR",
+        /* 2. 라틴 문자에 최적화된 Roboto를 다음 순위로 지정합니다. */ "Roboto",
+        /* 3. 모든 것이 실패했을 때 사용할 기본 산세리프 폰트 */ sans-serif;
     margin: 0;
     background-color: #f2f4f7;
+
+
 }
 
 
